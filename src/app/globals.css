@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-cream text-warmGray-900 antialiased;
+}
+
+/* Smooth ticker animation for yield counter */
+@keyframes tick-up {
+  from {
+    opacity: 0.6;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.yield-tick {
+  animation: tick-up 0.3s ease-out;
+}
+
+/* Subtle gradient for the hero card */
+.savings-card {
+  background: linear-gradient(
+    135deg,
+    rgba(237, 118, 36, 0.08) 0%,
+    rgba(136, 154, 76, 0.08) 100%
+  );
+  backdrop-filter: blur(10px);
+}
