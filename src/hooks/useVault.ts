@@ -75,12 +75,12 @@ export function useVault() {
     : "0";
 
   // Cosmetic per-second counter so the balance visibly ticks up between reads.
-  const [displayBalance, setDisplayBalance] = useState("0,00");
+  const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
     const baseAmount = parseFloat(formattedVaultBalance);
     if (baseAmount <= 0) {
-      setDisplayBalance("0,00");
+      setDisplayValue(0);
       return;
     }
 
@@ -89,13 +89,7 @@ export function useVault() {
 
     const interval = setInterval(() => {
       const elapsed = (Date.now() - startTime) / 1000;
-      const total = baseAmount + baseAmount * perSecondRate * elapsed;
-      setDisplayBalance(
-        total.toLocaleString("it-IT", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 6,
-        })
-      );
+      setDisplayValue(baseAmount + baseAmount * perSecondRate * elapsed);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -176,7 +170,7 @@ export function useVault() {
     activeChainLabel: CHAIN_LABEL,
     usdcBalance: formattedUsdcBalance,
     vaultBalance: formattedVaultBalance,
-    displayBalance,
+    displayValue,
     deposit,
     withdraw,
     refetchAll,

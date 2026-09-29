@@ -180,13 +180,13 @@ export default function DepositModal({
             <div className="flex justify-between text-sm">
               <span className="text-warmGray-500">Al mese (netto)</span>
               <span className="text-olive-700 font-semibold">
-                +€{monthlyNet.toFixed(2)}
+                +${monthlyNet.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-warmGray-500">All&apos;anno (netto)</span>
               <span className="text-olive-700 font-semibold">
-                +€{yearlyNet.toFixed(2)}
+                +${yearlyNet.toFixed(2)}
               </span>
             </div>
             <p className="text-warmGray-400 text-xs mt-1">

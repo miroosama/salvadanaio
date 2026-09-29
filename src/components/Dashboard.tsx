@@ -23,7 +23,7 @@ export default function Dashboard() {
     activeChainLabel,
     usdcBalance,
     vaultBalance,
-    displayBalance,
+    displayValue,
     deposit,
     withdraw,
     refetchAll,
@@ -91,7 +91,7 @@ export default function Dashboard() {
         </div>
 
         {/* Balance ticker */}
-        <YieldTicker displayBalance={displayBalance} hasDeposit={hasDeposit} />
+        <YieldTicker displayValue={displayValue} hasDeposit={hasDeposit} />
 
         {/* Action buttons */}
         <div className="flex gap-3 mt-6">
