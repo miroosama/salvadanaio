@@ -40,14 +40,19 @@ contract Salvadanaio is ERC4626, Ownable {
     IAavePool public immutable aavePool;
     IERC20 public immutable aUsdc; // Aave's aUSDC token (interest-bearing)
 
+    // Alpha blast-radius cap on totalAssets (raise-only). Enforced via maxDeposit.
+    uint256 public depositCap;
+
     // Events for frontend tracking
     event Deposited(address indexed user, uint256 amount, uint256 shares);
     event Withdrawn(address indexed user, uint256 amount, uint256 shares);
+    event DepositCapRaised(uint256 oldCap, uint256 newCap);
 
     constructor(
         IERC20 _usdc,
         IAavePool _aavePool,
-        IERC20 _aUsdc
+        IERC20 _aUsdc,
+        uint256 _depositCap
     )
         ERC4626(_usdc)
         ERC20("Salvadanaio Shares", "SALVA")
@@ -55,6 +60,7 @@ contract Salvadanaio is ERC4626, Ownable {
     {
         aavePool = _aavePool;
         aUsdc = _aUsdc;
+        depositCap = _depositCap;
     }
 
     /**
@@ -64,6 +70,21 @@ contract Salvadanaio is ERC4626, Ownable {
      */
     function totalAssets() public view override returns (uint256) {
         return aUsdc.balanceOf(address(this));
+    }
+
+    /**
+     * @notice Alpha blast-radius cap, expressed through maxDeposit/maxMint so
+     *         ERC4626 enforces it and integrators can read remaining capacity.
+     *         Caps totalAssets (v1 simple). Exits are NEVER capped — maxWithdraw
+     *         and maxRedeem keep the ERC4626 defaults.
+     */
+    function maxDeposit(address) public view override returns (uint256) {
+        uint256 assets = totalAssets();
+        return assets >= depositCap ? 0 : depositCap - assets;
+    }
+
+    function maxMint(address receiver) public view override returns (uint256) {
+        return convertToShares(maxDeposit(receiver));
     }
 
     /**
@@ -111,5 +132,16 @@ contract Salvadanaio is ERC4626, Ownable {
     function recoverToken(IERC20 token) external onlyOwner {
         require(address(token) != address(aUsdc), "Cannot withdraw aUSDC");
         token.safeTransfer(owner(), token.balanceOf(address(this)));
+    }
+
+    /**
+     * @notice Raise the deposit cap. Raise-only by design — the owner can widen
+     *         access as confidence grows but can never restrict it or gate exits.
+     *         Worst-case key compromise is "cap got raised", not funds lost.
+     */
+    function setDepositCap(uint256 newCap) external onlyOwner {
+        require(newCap >= depositCap, "cap can only be raised");
+        emit DepositCapRaised(depositCap, newCap);
+        depositCap = newCap;
     }
 }
