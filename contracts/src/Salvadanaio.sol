@@ -88,6 +88,16 @@ contract Salvadanaio is ERC4626, Ownable {
     }
 
     /**
+     * @dev Inflation-attack mitigation. A 6-decimal virtual-share offset makes
+     *      the virtual share pool large enough that a donation inflating
+     *      totalAssets cannot grief a later depositor out of their shares.
+     *      (OZ v5's default offset of 0 is weaker; this is the belt-and-braces.)
+     */
+    function _decimalsOffset() internal pure override returns (uint8) {
+        return 6;
+    }
+
+    /**
      * @dev After ERC4626 mints shares, supply the USDC to Aave.
      */
     function _deposit(
