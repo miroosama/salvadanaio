@@ -8,3 +8,8 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# Foundry (contracts/)
+contracts/out/
+contracts/cache/
+contracts/lib/

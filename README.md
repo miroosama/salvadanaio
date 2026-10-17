@@ -46,7 +46,7 @@ Open [http://localhost:3000](http://localhost:3000) on your phone (use your loca
 
 ## Smart Contract Deployment
 
-The vault contract is in `contracts/Salvadanaio.sol`. To deploy:
+The vault contract is in `contracts/src/Salvadanaio.sol` (Foundry project). To deploy:
 
 ### Option A: Remix (quickest, no local toolchain)
 
@@ -84,8 +84,12 @@ forge create Salvadanaio \
 
 ```
 salvadanaio/
-├── contracts/
-│   └── Salvadanaio.sol          # ERC-4626 vault → Aave V3
+├── contracts/                   # Foundry project
+│   ├── foundry.toml
+│   └── src/
+│       ├── Salvadanaio.sol      # ERC-4626 vault → Aave V3 (mainnet)
+│       ├── SalvadanaioTestnet.sol
+│       └── MockUSDC.sol
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx           # Root layout, metadata, fonts
