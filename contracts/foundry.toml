@@ -4,7 +4,8 @@ out = "out"
 libs = ["lib"]
 optimizer = true
 optimizer_runs = 200
-# solc auto-selected from the ^0.8.20 pragma; pinned exactly before mainnet deploy.
+solc = "0.8.26"
+evm_version = "cancun"
 
 [rpc_endpoints]
 base = "https://mainnet.base.org"

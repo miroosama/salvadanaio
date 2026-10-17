@@ -5,6 +5,14 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Salvadanaio, IAavePool} from "../src/Salvadanaio.sol";
 
+struct ReserveConfigurationMap {
+    uint256 data;
+}
+
+interface IAaveConfig {
+    function getConfiguration(address asset) external view returns (ReserveConfigurationMap memory);
+}
+
 /// Fork tests against LIVE Base mainnet Aave V3.
 /// Run: forge test --match-contract SalvadanaioFork
 contract SalvadanaioForkTest is Test {
@@ -89,5 +97,19 @@ contract SalvadanaioForkTest is Test {
 
         // Victim keeps essentially all of it (>99.9%) despite the donation.
         assertGt(recoverable, (victimDeposit * 999) / 1000, "victim protected from inflation grief");
+    }
+
+    // Reserve-health flags. The vault itself can only revert when Aave is
+    // frozen (new supply blocked, withdraw still allowed) or paused (all
+    // blocked) — graceful handling is the frontend's job, which reads these
+    // same flags to avoid showing an action that will revert.
+    function test_fork_reserveIsHealthy() public view {
+        uint256 data = IAaveConfig(AAVE_POOL).getConfiguration(USDC).data;
+        bool active = ((data >> 56) & 1) == 1;
+        bool frozen = ((data >> 57) & 1) == 1;
+        bool paused = ((data >> 60) & 1) == 1;
+        assertTrue(active, "USDC reserve active");
+        assertFalse(frozen, "USDC reserve not frozen");
+        assertFalse(paused, "USDC reserve not paused");
     }
 }

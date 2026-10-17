@@ -126,8 +126,11 @@ contract Salvadanaio is ERC4626, Ownable {
         uint256 assets,
         uint256 shares
     ) internal override {
-        // Withdraw USDC from Aave back to this contract
-        aavePool.withdraw(asset(), assets, address(this));
+        // Withdraw USDC from Aave back to this contract. Aave reverts if it
+        // can't fulfill the exact amount, but assert the returned amount too so
+        // a short withdrawal can never silently reach the user transfer below.
+        uint256 withdrawn = aavePool.withdraw(asset(), assets, address(this));
+        require(withdrawn == assets, "Aave withdrew less than requested");
 
         // Transfer USDC to user (handled by ERC4626 parent)
         super._withdraw(caller, receiver, owner, assets, shares);
