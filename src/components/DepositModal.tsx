@@ -9,6 +9,7 @@ import {
 } from "@/lib/constants";
 import { parseTxError, type FriendlyError } from "@/lib/errors";
 import type { DepositStep } from "@/hooks/useVault";
+import { CheckIcon } from "@/components/Icons";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -95,7 +96,7 @@ export default function DepositModal({
       />
 
       {/* Modal - slides up on mobile */}
-      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 shadow-xl">
+      <div className="relative bg-card border-[1.5px] border-mint-300 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 shadow-xl">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl text-warmGray-900">Deposita</h2>
           <button
@@ -108,8 +109,8 @@ export default function DepositModal({
 
         {txHash ? (
           <div className="text-center space-y-4 py-4">
-            <span className="text-5xl block">✅</span>
-            <p className="font-display text-xl text-warmGray-900">
+            <CheckIcon className="w-16 h-16 mx-auto text-mint-500" />
+            <p className="font-display text-xl text-ink">
               Deposito completato
             </p>
             <p className="text-warmGray-500 text-sm">
@@ -135,12 +136,12 @@ export default function DepositModal({
         ) : (
           <>
         {/* Amount input */}
-        <div className="bg-warmGray-50 rounded-xl p-4 mb-4">
+        <div className="bg-white border border-mint-200 rounded-xl p-4 mb-4">
           <label className="text-warmGray-500 text-sm block mb-2">
             Importo (USDC)
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-warmGray-400 text-xl">$</span>
+            <span className="text-terracotta-500 text-xl">$</span>
             <input
               type="number"
               inputMode="decimal"
@@ -162,7 +163,7 @@ export default function DepositModal({
                 <button
                   key={pct}
                   onClick={() => setPercentage(pct)}
-                  className="text-xs px-2 py-1 rounded-md bg-warmGray-200 text-warmGray-600 hover:bg-terracotta-100 hover:text-terracotta-600 transition-colors"
+                  className="text-xs px-2 py-1 rounded-md bg-mint-50 text-mint-700 border border-mint-300 hover:bg-mint-100 transition-colors"
                 >
                   {pct === 1 ? "MAX" : `${pct * 100}%`}
                 </button>
@@ -173,19 +174,19 @@ export default function DepositModal({
 
         {/* Earnings preview */}
         {numAmount > 0 && (
-          <div className="bg-olive-50 rounded-xl p-4 mb-4 space-y-2">
-            <p className="text-olive-700 text-sm font-medium">
+          <div className="bg-mint-50 rounded-xl p-4 mb-4 space-y-2">
+            <p className="text-mint-700 text-sm font-medium">
               Stima guadagno
             </p>
             <div className="flex justify-between text-sm">
               <span className="text-warmGray-500">Al mese (netto)</span>
-              <span className="text-olive-700 font-semibold">
+              <span className="text-mint-700 font-semibold">
                 +${monthlyNet.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-warmGray-500">All&apos;anno (netto)</span>
-              <span className="text-olive-700 font-semibold">
+              <span className="text-mint-700 font-semibold">
                 +${yearlyNet.toFixed(2)}
               </span>
             </div>

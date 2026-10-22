@@ -41,21 +41,20 @@ export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
   };
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+    <div className="bg-mint-50 border border-mint-100 rounded-2xl p-5">
       <div className="flex items-start gap-3">
-        <span className="text-xl">🧪</span>
         <div className="flex-1">
-          <h3 className="font-semibold text-amber-800 text-sm">
+          <h3 className="font-semibold text-mint-800 text-sm">
             Modalità Testnet
           </h3>
-          <p className="text-amber-700 text-xs mt-1 leading-relaxed">
+          <p className="text-mint-700 text-xs mt-1 leading-relaxed">
             Stai usando Base Sepolia. Premi il pulsante per ricevere 1.000 USDC
             di test gratuiti.
           </p>
           <button
             onClick={handleMint}
             disabled={isLoading}
-            className="mt-3 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-medium text-sm transition-colors"
+            className="mt-3 px-4 py-2 rounded-lg bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-medium text-sm transition-colors"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">

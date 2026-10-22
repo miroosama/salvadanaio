@@ -5,32 +5,47 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Warm Italian-inspired palette
+        // Italian coast — bright orange primary, vivid Vespa-mint secondary
         terracotta: {
-          50: "#fef7f0",
-          100: "#fdecd8",
-          200: "#fad5b0",
-          300: "#f6b87d",
-          400: "#f19248",
-          500: "#ed7624",
-          600: "#de5d1a",
-          700: "#b84617",
-          800: "#93381a",
-          900: "#773118",
+          // primary / brand / action (inner-lining-of-a-leather-jacket orange)
+          50: "#FDF1EA",
+          100: "#FBDDCF",
+          200: "#F6BBA0",
+          300: "#F0926A",
+          400: "#EC763F",
+          500: "#E8622A",
+          600: "#D1521F",
+          700: "#B8461A",
+          800: "#933A1A",
+          900: "#7A3118",
         },
-        olive: {
-          50: "#f7f8f0",
-          100: "#edf0dd",
-          200: "#dae0bc",
-          300: "#c0cb91",
-          400: "#a5b46a",
-          500: "#889a4c",
-          600: "#6a7b3a",
-          700: "#525f2f",
-          800: "#434d2a",
-          900: "#3a4227",
+        peach: {
+          // warm Amalfi surface — modals & the page canvas
+          50: "#FEF6F0",
+          100: "#FDEADF",
+          200: "#F8D8C6",
+          300: "#F2BFA3",
         },
-        cream: "#faf8f4",
+        mint: {
+          // positive / growth / secondary — vivid coastal-car green
+          50: "#E7F8F2",
+          100: "#C6EFE2",
+          200: "#97E4CE",
+          300: "#6FD9BE",
+          400: "#38C9A4",
+          500: "#17AC8B",
+          600: "#0E8E72",
+          700: "#0C7159",
+          800: "#0C5B48",
+          900: "#0B4A3C",
+        },
+        // warm sun-washed peach plaster — the Cinque Terre canvas the cards sit on
+        canvas: "#F4DBCB",
+        // light stucco surface for cards & header — floats above the peach canvas
+        cream: "#FDFBF8",
+        // warm modal surface — a touch creamier than the cards
+        card: "#FCF8F1",
+        ink: "#2B2420",
         warmGray: {
           50: "#faf9f7",
           100: "#f0eeea",
@@ -40,8 +55,8 @@ const config: Config = {
           500: "#a19683",
           600: "#948774",
           700: "#7b6f61",
-          800: "#655c52",
-          900: "#534d44",
+          800: "#463f38",
+          900: "#2e2824",
         },
       },
       fontFamily: {

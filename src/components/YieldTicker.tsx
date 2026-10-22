@@ -42,8 +42,8 @@ export default function YieldTicker({
         </span>
       </div>
       <div className="mt-3 flex items-center justify-center gap-2">
-        <span className="inline-block w-2 h-2 rounded-full bg-olive-400 animate-pulse" />
-        <span className="text-olive-600 text-sm font-medium">
+        <span className="inline-block w-2 h-2 rounded-full bg-mint-300 animate-pulse" />
+        <span className="text-mint-600 text-sm font-medium">
           Sta crescendo in tempo reale
         </span>
       </div>

@@ -5,6 +5,7 @@ import {
   SALVADANAIO_ESTIMATED_RATE,
   ITALIAN_CRYPTO_TAX_RATE,
 } from "@/lib/constants";
+import PiggyLogo from "@/components/PiggyLogo";
 
 export default function BankComparison() {
   const salvadanaioNetRate =
@@ -35,25 +36,23 @@ export default function BankComparison() {
             </tr>
           </thead>
           <tbody>
-            {/* Salvadanaio row - highlighted */}
-            <tr className="bg-terracotta-50 border-b border-terracotta-100">
+            {/* Salvadanaio row - highlighted (the winner → mint) */}
+            <tr className="bg-mint-50 border-b border-mint-100">
               <td className="py-3 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">🐷</span>
-                  <span className="font-semibold text-terracotta-700">
+                  <PiggyLogo className="w-5 h-5" />
+                  <span className="font-semibold text-mint-800">
                     Salvadanaio
                   </span>
                 </div>
               </td>
-              <td className="text-right py-3 px-3 font-semibold text-terracotta-600">
+              <td className="text-right py-3 px-3 font-semibold text-mint-700">
                 {SALVADANAIO_ESTIMATED_RATE.toFixed(1)}%
               </td>
-              <td className="text-right py-3 px-3 font-semibold text-terracotta-600">
+              <td className="text-right py-3 px-3 font-semibold text-mint-700">
                 ~{salvadanaioNetRate.toFixed(1)}%
               </td>
-              <td className="text-right py-3 pl-3 text-terracotta-600">
-                Nessuno
-              </td>
+              <td className="text-right py-3 pl-3 text-mint-700">Nessuno</td>
             </tr>
 
             {/* Bank rows */}

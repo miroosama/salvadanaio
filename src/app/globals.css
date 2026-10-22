@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-cream text-warmGray-900 antialiased;
+  @apply bg-canvas text-warmGray-900 antialiased;
 }
 
 /* Smooth ticker animation for yield counter */
@@ -24,12 +24,3 @@ body {
   animation: tick-up 0.3s ease-out;
 }
 
-/* Subtle gradient for the hero card */
-.savings-card {
-  background: linear-gradient(
-    135deg,
-    rgba(237, 118, 36, 0.08) 0%,
-    rgba(136, 154, 76, 0.08) 100%
-  );
-  backdrop-filter: blur(10px);
-}

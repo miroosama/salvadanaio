@@ -3,29 +3,22 @@
 import { usePrivy } from "@privy-io/react-auth";
 import Dashboard from "@/components/Dashboard";
 import BankComparison from "@/components/BankComparison";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PiggyLogo from "@/components/PiggyLogo";
+import { TrendIcon, BoltIcon, LockIcon, FlagIcon } from "@/components/Icons";
 import {
   SALVADANAIO_ESTIMATED_RATE,
   ITALIAN_CRYPTO_TAX_RATE,
-  IS_TESTNET,
-  CHAIN_LABEL,
 } from "@/lib/constants";
 
-function TestnetBadge() {
-  if (!IS_TESTNET) return null;
-  return (
-    <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-full">
-      🧪 {CHAIN_LABEL}
-    </span>
-  );
-}
-
 export default function Home() {
-  const { ready, authenticated, login, logout, user } = usePrivy();
+  const { ready, authenticated, login, logout } = usePrivy();
 
   // Still loading Privy
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-canvas">
         <div className="w-8 h-8 border-3 border-terracotta-200 border-t-terracotta-500 rounded-full animate-spin" />
       </div>
     );
@@ -33,31 +26,13 @@ export default function Home() {
 
   if (authenticated) {
     return (
-      <main className="min-h-screen bg-cream pb-12">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-cream/80 backdrop-blur-md border-b border-warmGray-100">
-          <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🐷</span>
-              <span className="font-display text-lg text-warmGray-800">
-                Salvadanaio
-              </span>
-              <TestnetBadge />
-            </div>
-            <button
-              onClick={logout}
-              className="text-sm text-warmGray-400 hover:text-warmGray-600 transition-colors"
-            >
-              Esci
-            </button>
-          </div>
-        </header>
-
-        {/* Dashboard */}
-        <div className="px-4 pt-6">
+      <div className="min-h-screen bg-canvas flex flex-col">
+        <Header onLogout={logout} />
+        <main className="flex-1 w-full max-w-md mx-auto px-4 pt-6">
           <Dashboard />
-        </div>
-      </main>
+        </main>
+        <Footer />
+      </div>
     );
   }
 
@@ -65,15 +40,13 @@ export default function Home() {
     SALVADANAIO_ESTIMATED_RATE * (1 - ITALIAN_CRYPTO_TAX_RATE / 100);
 
   return (
-    <main className="min-h-screen bg-cream">
-      <div className="max-w-md mx-auto px-4 py-12 space-y-10">
+    <div className="min-h-screen bg-canvas flex flex-col">
+      <Header />
+      <main className="flex-1 w-full max-w-md mx-auto px-4 py-12 space-y-10">
         {/* Hero */}
         <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <TestnetBadge />
-          </div>
-          <span className="text-6xl block">🐷</span>
-          <h1 className="font-display text-4xl text-warmGray-900 leading-tight">
+          <PiggyLogo className="w-20 h-20 mx-auto" />
+          <h1 className="font-display text-4xl text-ink leading-tight">
             Il tuo salvadanaio
             <br />
             <span className="text-terracotta-500">digitale</span>
@@ -88,33 +61,35 @@ export default function Home() {
         <div className="space-y-3">
           {[
             {
-              icon: "📈",
+              Icon: TrendIcon,
               title: `~${SALVADANAIO_ESTIMATED_RATE}% annuo`,
               desc: "Rendimenti superiori a qualsiasi banca italiana",
             },
             {
-              icon: "⚡",
+              Icon: BoltIcon,
               title: "Prelievo istantaneo",
               desc: "Nessun vincolo, nessuna penale. I tuoi soldi, sempre.",
             },
             {
-              icon: "🔒",
+              Icon: LockIcon,
               title: "Trasparente e sicuro",
               desc: "Basato su Aave, il protocollo DeFi più grande al mondo",
             },
             {
-              icon: "🇮🇹",
+              Icon: FlagIcon,
               title: "Pensato per l'Italia",
               desc: "Tassazione chiara, tutto in italiano, senza sorprese",
             },
           ].map((item) => (
             <div
               key={item.title}
-              className="flex items-start gap-4 bg-white rounded-xl border border-warmGray-100 p-4"
+              className="flex items-start gap-4 bg-cream rounded-xl border border-mint-100 p-4"
             >
-              <span className="text-2xl mt-0.5">{item.icon}</span>
+              <span className="text-mint-500 mt-0.5">
+                <item.Icon className="w-6 h-6" />
+              </span>
               <div>
-                <p className="font-semibold text-warmGray-800">{item.title}</p>
+                <p className="font-semibold text-ink">{item.title}</p>
                 <p className="text-warmGray-500 text-sm mt-0.5">{item.desc}</p>
               </div>
             </div>
@@ -122,7 +97,7 @@ export default function Home() {
         </div>
 
         {/* Bank comparison */}
-        <div className="bg-white rounded-2xl border border-warmGray-100 p-5">
+        <div className="bg-cream rounded-2xl border border-mint-100 p-5">
           <BankComparison />
         </div>
 
@@ -138,7 +113,8 @@ export default function Home() {
             Registrati con email. Nessun wallet richiesto.
           </p>
         </div>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </div>
   );
 }

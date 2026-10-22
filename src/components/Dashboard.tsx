@@ -7,6 +7,7 @@ import BankComparison from "./BankComparison";
 import DepositModal from "./DepositModal";
 import WithdrawModal from "./WithdrawModal";
 import TestnetFaucet from "./TestnetFaucet";
+import { LockIcon } from "@/components/Icons";
 import {
   SALVADANAIO_ESTIMATED_RATE,
   ITALIAN_CRYPTO_TAX_RATE,
@@ -76,12 +77,12 @@ export default function Dashboard() {
       {IS_TESTNET && <TestnetFaucet onMinted={refetchAll} />}
 
       {/* Main savings card */}
-      <div className="savings-card rounded-2xl border border-warmGray-200 p-6">
+      <div className="bg-cream rounded-2xl border border-mint-200 p-6">
         {/* Rate badge */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-warmGray-500">Tasso attuale</span>
           <div className="flex items-center gap-2">
-            <span className="bg-olive-100 text-olive-700 text-sm font-semibold px-3 py-1 rounded-full">
+            <span className="bg-mint-50 text-mint-700 text-sm font-semibold px-3 py-1 rounded-full">
               ~{SALVADANAIO_ESTIMATED_RATE}% lordo
             </span>
             <span className="bg-warmGray-100 text-warmGray-600 text-xs px-2 py-1 rounded-full">
@@ -126,7 +127,7 @@ export default function Dashboard() {
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-xl border border-warmGray-100 p-4">
+        <div className="bg-cream rounded-xl border border-mint-100 p-4">
           <p className="text-warmGray-400 text-xs font-medium">
             Nel salvadanaio
           </p>
@@ -134,7 +135,7 @@ export default function Dashboard() {
             ${parseFloat(vaultBalance).toFixed(2)}
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-warmGray-100 p-4">
+        <div className="bg-cream rounded-xl border border-mint-100 p-4">
           <p className="text-warmGray-400 text-xs font-medium">
             USDC nel wallet
           </p>
@@ -145,25 +146,29 @@ export default function Dashboard() {
       </div>
 
       {/* Bank comparison */}
-      <div className="bg-white rounded-2xl border border-warmGray-100 p-5">
+      <div className="bg-cream rounded-2xl border border-mint-100 p-5">
         <BankComparison />
       </div>
 
       {/* How it works */}
-      <details className="bg-white rounded-2xl border border-warmGray-100 p-5">
+      <details className="bg-cream rounded-2xl border border-mint-100 p-5">
         <summary className="font-display text-lg text-warmGray-800 cursor-pointer select-none">
           Come funziona?
         </summary>
         <div className="mt-4 space-y-4 text-sm text-warmGray-600 leading-relaxed">
           <div className="flex gap-3">
-            <span className="text-xl">1️⃣</span>
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
+              1
+            </span>
             <p>
               <strong>Depositi USDC</strong> — una moneta digitale stabile
               ancorata al dollaro, usata da milioni di persone nel mondo.
             </p>
           </div>
           <div className="flex gap-3">
-            <span className="text-xl">2️⃣</span>
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
+              2
+            </span>
             <p>
               <strong>Noi li mettiamo a rendita</strong> — i tuoi USDC vengono
               depositati in Aave, il protocollo di prestiti decentralizzato più
@@ -171,7 +176,9 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex gap-3">
-            <span className="text-xl">3️⃣</span>
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
+              3
+            </span>
             <p>
               <strong>Guadagni ogni secondo</strong> — gli interessi maturano
               continuamente, non a fine mese. Puoi prelevare quando vuoi, senza
@@ -179,7 +186,9 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex gap-3">
-            <span className="text-xl">🔒</span>
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 flex items-center justify-center">
+              <LockIcon className="w-3.5 h-3.5" />
+            </span>
             <p>
               <strong>Sempre al sicuro</strong> — i tuoi fondi restano sulla
               blockchain, non in mano a una banca. Il codice è aperto e

@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   // Prevent zoom on input focus on iOS
   userScalable: false,
-  themeColor: "#faf8f4",
+  themeColor: "#F4DBCB",
 };
 
 export default function RootLayout({

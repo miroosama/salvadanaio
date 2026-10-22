@@ -5,6 +5,7 @@ import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { base, baseSepolia } from "viem/chains";
 import { wagmiConfig } from "@/config/wagmi";
+import PiggyLogo from "@/components/PiggyLogo";
 
 const queryClient = new QueryClient();
 
@@ -14,10 +15,10 @@ const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 // the app is unconfigured (fresh clone or a deploy missing its env vars).
 function MissingConfig() {
   return (
-    <main className="min-h-screen bg-cream flex items-center justify-center px-6">
+    <main className="min-h-screen bg-canvas flex items-center justify-center px-6">
       <div className="max-w-sm text-center space-y-3">
-        <span className="text-5xl block">🐷</span>
-        <h1 className="font-display text-2xl text-warmGray-900">
+        <PiggyLogo className="w-16 h-16 mx-auto" />
+        <h1 className="font-display text-2xl text-ink">
           Configurazione mancante
         </h1>
         <p className="text-warmGray-500 text-sm leading-relaxed">
