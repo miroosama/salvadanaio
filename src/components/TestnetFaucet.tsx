@@ -20,7 +20,6 @@ export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
     setIsLoading(true);
     setSuccess(false);
     try {
-      // Mint 1000 test USDC
       await writeContractAsync({
         address: CONTRACTS.usdc,
         abi: MOCK_USDC_ABI,
@@ -28,7 +27,7 @@ export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
         args: [parseUnits("1000", USDC_DECIMALS)],
       });
       setSuccess(true);
-      // Wait a moment for the tx to be indexed, then refresh balances
+      // Give the tx a moment to be indexed before refetching balances.
       setTimeout(() => {
         onMinted();
         setSuccess(false);

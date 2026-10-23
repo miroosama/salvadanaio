@@ -41,7 +41,11 @@ export function useVault() {
     query: { enabled: !!address },
   });
 
-  const { data: vaultShares, refetch: refetchShares } = useReadContract({
+  const {
+    data: vaultShares,
+    refetch: refetchShares,
+    isLoading: isSharesLoading,
+  } = useReadContract({
     address: CONTRACTS.vault,
     abi: VAULT_ABI,
     functionName: "balanceOf",
@@ -50,7 +54,11 @@ export function useVault() {
   });
 
   // Share balance converted to USDC, so the value reflects accrued yield.
-  const { data: vaultBalance, refetch: refetchVaultBalance } = useReadContract({
+  const {
+    data: vaultBalance,
+    refetch: refetchVaultBalance,
+    isLoading: isVaultBalanceLoading,
+  } = useReadContract({
     address: CONTRACTS.vault,
     abi: VAULT_ABI,
     functionName: "convertToAssets",
@@ -74,6 +82,13 @@ export function useVault() {
     ? formatUnits(vaultBalance as bigint, USDC_DECIMALS)
     : "0";
 
+  // Still resolving until shares settle — and, if there are shares, until the
+  // asset conversion settles too. Drives the balance skeleton.
+  const isPositionLoading =
+    !!address &&
+    (isSharesLoading ||
+      (!!vaultShares && vaultShares > 0n && isVaultBalanceLoading));
+
   // Cosmetic per-second counter so the balance visibly ticks up between reads.
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -83,6 +98,10 @@ export function useVault() {
       setDisplayValue(0);
       return;
     }
+
+    // Paint the real balance now; the interval only animates the ticks after
+    // (otherwise it reads $0.00 for the first second).
+    setDisplayValue(baseAmount);
 
     const perSecondRate = SALVADANAIO_ESTIMATED_RATE / 100 / 365 / 24 / 3600;
     const startTime = Date.now();
@@ -171,6 +190,7 @@ export function useVault() {
     usdcBalance: formattedUsdcBalance,
     vaultBalance: formattedVaultBalance,
     displayValue,
+    isPositionLoading,
     deposit,
     withdraw,
     refetchAll,

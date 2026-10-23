@@ -89,13 +89,11 @@ export default function DepositModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={handleClose}
       />
 
-      {/* Modal - slides up on mobile */}
       <div className="relative bg-card border-[1.5px] border-mint-300 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 shadow-xl">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl text-warmGray-900">Deposita</h2>
@@ -135,7 +133,6 @@ export default function DepositModal({
           </div>
         ) : (
           <>
-        {/* Amount input */}
         <div className="bg-white border border-mint-200 rounded-xl p-4 mb-4">
           <label className="text-warmGray-500 text-sm block mb-2">
             Importo (USDC)
@@ -172,7 +169,6 @@ export default function DepositModal({
           </div>
         </div>
 
-        {/* Earnings preview */}
         {numAmount > 0 && (
           <div className="bg-mint-50 rounded-xl p-4 mb-4 space-y-2">
             <p className="text-mint-700 text-sm font-medium">
@@ -196,7 +192,6 @@ export default function DepositModal({
           </div>
         )}
 
-        {/* Error */}
         {error && (
           <div className="mb-4 px-1">
             <p className="text-red-600 text-sm font-medium">{error.title}</p>
@@ -213,7 +208,6 @@ export default function DepositModal({
           </div>
         )}
 
-        {/* CTA */}
         <button
           onClick={handleDeposit}
           disabled={isLoading || numAmount <= 0}

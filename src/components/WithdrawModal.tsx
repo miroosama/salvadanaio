@@ -109,7 +109,6 @@ export default function WithdrawModal({
           </div>
         ) : (
           <>
-        {/* Amount input */}
         <div className="bg-white border border-mint-200 rounded-xl p-4 mb-4">
           <label className="text-warmGray-500 text-sm block mb-2">
             Importo da prelevare (USDC)

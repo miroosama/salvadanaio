@@ -3,12 +3,30 @@
 interface YieldTickerProps {
   displayValue: number;
   hasDeposit: boolean;
+  isLoading?: boolean;
 }
 
 export default function YieldTicker({
   displayValue,
   hasDeposit,
+  isLoading = false,
 }: YieldTickerProps) {
+  if (isLoading) {
+    return (
+      <div className="text-center py-6">
+        <p className="text-warmGray-500 text-sm font-medium mb-2">
+          Il tuo saldo
+        </p>
+        <div className="flex items-baseline justify-center gap-2">
+          <div className="h-12 w-48 rounded-lg bg-warmGray-100 animate-pulse" />
+        </div>
+        <div className="mt-4 flex items-center justify-center">
+          <div className="h-4 w-36 rounded bg-warmGray-100 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   if (!hasDeposit) {
     return (
       <div className="text-center py-8">

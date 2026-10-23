@@ -25,6 +25,7 @@ export default function Dashboard() {
     usdcBalance,
     vaultBalance,
     displayValue,
+    isPositionLoading,
     deposit,
     withdraw,
     refetchAll,
@@ -55,7 +56,6 @@ export default function Dashboard() {
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
-      {/* Wrong-network guard */}
       {isConnected && !isCorrectChain && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-3">
           <p className="text-amber-800 text-sm">
@@ -73,12 +73,9 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Testnet faucet (only shows on testnet) */}
       {IS_TESTNET && <TestnetFaucet onMinted={refetchAll} />}
 
-      {/* Main savings card */}
       <div className="bg-cream rounded-2xl border border-mint-200 p-6">
-        {/* Rate badge */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-warmGray-500">Tasso attuale</span>
           <div className="flex items-center gap-2">
@@ -91,10 +88,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Balance ticker */}
-        <YieldTicker displayValue={displayValue} hasDeposit={hasDeposit} />
+        <YieldTicker
+          displayValue={displayValue}
+          hasDeposit={hasDeposit}
+          isLoading={isPositionLoading}
+        />
 
-        {/* Action buttons */}
         <div className="flex gap-3 mt-6">
           <button
             onClick={() => setShowDeposit(true)}
@@ -112,7 +111,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Nudge to get USDC if wallet is empty */}
         {!hasUsdc && !hasDeposit && !IS_TESTNET && (
           <p className="text-warmGray-400 text-xs text-center mt-3">
             Per iniziare, acquista USDC con il pulsante sopra
@@ -125,32 +123,37 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Quick stats */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-cream rounded-xl border border-mint-100 p-4">
           <p className="text-warmGray-400 text-xs font-medium">
             Nel salvadanaio
           </p>
-          <p className="text-warmGray-900 text-lg font-semibold mt-1">
-            ${parseFloat(vaultBalance).toFixed(2)}
-          </p>
+          {isPositionLoading ? (
+            <div className="h-6 w-20 rounded bg-warmGray-100 animate-pulse mt-1.5" />
+          ) : (
+            <p className="text-warmGray-900 text-lg font-semibold mt-1">
+              ${parseFloat(vaultBalance).toFixed(2)}
+            </p>
+          )}
         </div>
         <div className="bg-cream rounded-xl border border-mint-100 p-4">
           <p className="text-warmGray-400 text-xs font-medium">
             USDC nel wallet
           </p>
-          <p className="text-warmGray-900 text-lg font-semibold mt-1">
-            ${parseFloat(usdcBalance).toFixed(2)}
-          </p>
+          {isPositionLoading ? (
+            <div className="h-6 w-20 rounded bg-warmGray-100 animate-pulse mt-1.5" />
+          ) : (
+            <p className="text-warmGray-900 text-lg font-semibold mt-1">
+              ${parseFloat(usdcBalance).toFixed(2)}
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Bank comparison */}
       <div className="bg-cream rounded-2xl border border-mint-100 p-5">
         <BankComparison />
       </div>
 
-      {/* How it works */}
       <details className="bg-cream rounded-2xl border border-mint-100 p-5">
         <summary className="font-display text-lg text-warmGray-800 cursor-pointer select-none">
           Come funziona?
@@ -198,7 +201,6 @@ export default function Dashboard() {
         </div>
       </details>
 
-      {/* Modals */}
       <DepositModal
         isOpen={showDeposit}
         onClose={() => setShowDeposit(false)}
