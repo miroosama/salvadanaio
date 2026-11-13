@@ -13,3 +13,8 @@ next-env.d.ts
 contracts/out/
 contracts/cache/
 contracts/lib/
+
+# Local planning / Claude files — never commit
+PLAN.md
+.claude/
+CLAUDE.md
