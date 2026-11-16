@@ -1,16 +1,23 @@
 "use client";
 
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, type State } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiConfig } from "@/config/wagmi";
 
 const queryClient = new QueryClient();
 
-// Base Account is keyless — no provider app id, no config gating. The app runs
-// with zero env vars, which is what the forkable / IPFS-hosted goal needs.
-export default function Providers({ children }: { children: React.ReactNode }) {
+// The Coinbase Smart Wallet connector is keyless — no app id, no config gating.
+// `initialState` is hydrated from the SSR cookie so the connection is restored on
+// first render (no logged-out flash, no re-sign on refresh).
+export default function Providers({
+  children,
+  initialState,
+}: {
+  children: React.ReactNode;
+  initialState?: State;
+}) {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig} initialState={initialState}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   );

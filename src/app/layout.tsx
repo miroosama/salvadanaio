@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
+import { cookieToInitialState } from "wagmi";
 import Providers from "@/providers/Providers";
+import { wagmiConfig } from "@/config/wagmi";
 import "./globals.css";
 
 // Absolute base so OG/Twitter image URLs resolve (Vercel URL in prod).
@@ -35,10 +38,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Hydrate wagmi from the SSR cookie so the server and client render the same
+  // connection state on first paint — no hydration mismatch, no re-sign on refresh.
+  const initialState = cookieToInitialState(
+    wagmiConfig,
+    headers().get("cookie")
+  );
+
   return (
     <html lang="it">
       <body>
-        <Providers>{children}</Providers>
+        <Providers initialState={initialState}>{children}</Providers>
       </body>
     </html>
   );
