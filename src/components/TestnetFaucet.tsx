@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAccount, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
-import { CONTRACTS, MOCK_USDC_ABI, USDC_DECIMALS } from "@/lib/constants";
+import { CONTRACTS, AAVE_FAUCET_ABI, USDC_DECIMALS } from "@/lib/constants";
 
 interface TestnetFaucetProps {
   onMinted: () => void;
@@ -21,10 +21,10 @@ export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
     setSuccess(false);
     try {
       await writeContractAsync({
-        address: CONTRACTS.usdc,
-        abi: MOCK_USDC_ABI,
-        functionName: "faucet",
-        args: [parseUnits("1000", USDC_DECIMALS)],
+        address: CONTRACTS.faucet,
+        abi: AAVE_FAUCET_ABI,
+        functionName: "mint",
+        args: [CONTRACTS.usdc, address, parseUnits("1000", USDC_DECIMALS)],
       });
       setSuccess(true);
       // Give the tx a moment to be indexed before refetching balances.

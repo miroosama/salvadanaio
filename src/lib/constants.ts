@@ -5,19 +5,30 @@ export const ACTIVE_CHAIN = baseSepolia;
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 
-// Warns instead of throwing on a missing/invalid address, so the build can
-// prerender without env vars and the app surfaces the issue at runtime.
-function requireAddress(value: string | undefined, name: string): `0x${string}` {
-  if (!value || !/^0x[a-fA-F0-9]{40}$/.test(value)) {
-    if (typeof window !== "undefined") {
-      console.error(
-        `Missing or invalid ${name}. Set it in .env.local (see .env.example).`
-      );
-    }
-    return ZERO_ADDRESS;
-  }
-  return value as `0x${string}`;
-}
+// Verified addresses (Aave address book + on-chain reads, Nov 2026). The
+// "vault" is Aave's own audited stataUSDC ERC-4626 wrapper — we deploy no
+// contract of our own. Flipping to mainnet = switch ACTIVE_CHAIN above; the
+// addresses follow. Env vars override per-field for local experiments.
+const ADDRESSES = {
+  [baseSepolia.id]: {
+    // waBasSepUSDC — Aave's static aToken (ERC-4626) over Base Sepolia USDC.
+    vault: "0xf430cb6E2b85f99222fBFA6dFEa18Ff60FA6B32a",
+    // Aave faucet USDC (the reserve's underlying on testnet, 6 decimals).
+    usdc: "0xba50Cd2A20f6DA35D788639E581bca8d0B5d4D5f",
+    // Aave permissionless Faucet for minting test USDC (isPermissioned == false).
+    faucet: "0xD9145b5F45Ad4519c7ACcD6E0A4A82e83bB8A6Dc",
+  },
+  [base.id]: {
+    // Mainnet stataUSDC: VERIFY the exact address from the Aave address book at
+    // Phase 3 (two wrapper generations exist). Zero until then = "not configured".
+    vault: ZERO_ADDRESS,
+    usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    faucet: ZERO_ADDRESS,
+  },
+} as const;
+
+const ACTIVE_ADDRESSES =
+  ADDRESSES[ACTIVE_CHAIN.id as keyof typeof ADDRESSES] ?? ADDRESSES[baseSepolia.id];
 
 export function isConfigured(): boolean {
   return (
@@ -27,13 +38,10 @@ export function isConfigured(): boolean {
 }
 
 export const CONTRACTS = {
-  vault: requireAddress(process.env.NEXT_PUBLIC_VAULT_ADDRESS, "NEXT_PUBLIC_VAULT_ADDRESS"),
-  usdc: (process.env.NEXT_PUBLIC_USDC_ADDRESS ??
-    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913") as `0x${string}`,
-  aavePool: (process.env.NEXT_PUBLIC_AAVE_POOL_ADDRESS ??
-    "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5") as `0x${string}`,
-  aUsdc: (process.env.NEXT_PUBLIC_AUSDC_ADDRESS ??
-    "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB") as `0x${string}`,
+  // The vault IS Aave's stataUSDC ERC-4626 wrapper — no contract of our own.
+  vault: (process.env.NEXT_PUBLIC_VAULT_ADDRESS ?? ACTIVE_ADDRESSES.vault) as `0x${string}`,
+  usdc: (process.env.NEXT_PUBLIC_USDC_ADDRESS ?? ACTIVE_ADDRESSES.usdc) as `0x${string}`,
+  faucet: (process.env.NEXT_PUBLIC_FAUCET_ADDRESS ?? ACTIVE_ADDRESSES.faucet) as `0x${string}`,
 } as const;
 
 export const USDC_DECIMALS = 6;
@@ -176,24 +184,18 @@ export const ERC20_ABI = [
   },
 ] as const;
 
-// MockUSDC faucet function (testnet only)
-export const MOCK_USDC_ABI = [
-  ...ERC20_ABI,
-  {
-    name: "faucet",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "amount", type: "uint256" }],
-    outputs: [],
-  },
+// Aave's permissionless Faucet (testnet only): mint test USDC to any address.
+// mint(token, to, amount) — isPermissioned == false, no per-call cap.
+export const AAVE_FAUCET_ABI = [
   {
     name: "mint",
     type: "function",
     stateMutability: "nonpayable",
     inputs: [
+      { name: "token", type: "address" },
       { name: "to", type: "address" },
       { name: "amount", type: "uint256" },
     ],
-    outputs: [],
+    outputs: [{ name: "", type: "uint256" }],
   },
 ] as const;
