@@ -8,9 +8,7 @@ export default function Footer() {
           Salvadanaio
         </span>
         <p className="text-xs text-warmGray-400">
-          {IS_TESTNET
-            ? "Alpha · Base Sepolia · non ancora auditato"
-            : "Alpha · Base"}
+          {IS_TESTNET ? "Alpha · Base Sepolia" : "Alpha · Base"}
         </p>
         {/* Future: cost-transparency ("cosa ci costa"), GitHub, how-it-works,
             "abbiamo costruito la tua uscita" / off-ramp, links. */}
