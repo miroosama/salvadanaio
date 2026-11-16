@@ -17,6 +17,12 @@ export default function Home() {
   const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
 
+  // Two ways in (wallet freedom): the Coinbase Smart Wallet passkey for newcomers,
+  // or the user's own injected wallet (MetaMask etc.) if they already self-custody.
+  const coinbaseConnector =
+    connectors.find((c) => c.id === "coinbaseWalletSDK") ?? connectors[0];
+  const injectedConnector = connectors.find((c) => c.id !== "coinbaseWalletSDK");
+
   // wagmi has no `ready`; gate on auto-reconnect so we don't flash the
   // logged-out UI before a returning user's session is restored.
   if (isReconnecting) {
@@ -101,17 +107,28 @@ export default function Home() {
           <BankComparison />
         </div>
 
-        <div className="pt-2">
+        <div className="pt-2 space-y-3">
           <button
-            onClick={() => connect({ connector: connectors[0] })}
+            onClick={() =>
+              coinbaseConnector && connect({ connector: coinbaseConnector })
+            }
             disabled={isPending}
             className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition-colors shadow-lg shadow-terracotta-500/20"
           >
             {isPending ? "Connessione..." : "Inizia a risparmiare"}
           </button>
-          <p className="text-center text-warmGray-400 text-xs mt-3">
-            Registrati con email. Nessun wallet richiesto.
+          <p className="text-center text-warmGray-400 text-xs">
+            Crea un account con una passkey. Niente seed phrase, niente app.
           </p>
+          {injectedConnector && (
+            <button
+              onClick={() => connect({ connector: injectedConnector })}
+              disabled={isPending}
+              className="w-full text-center text-sm font-medium text-terracotta-600 hover:text-terracotta-700 underline underline-offset-4 decoration-terracotta-300 transition-colors pt-1"
+            >
+              Hai già un wallet? Connettilo
+            </button>
+          )}
         </div>
       </main>
       <Footer />

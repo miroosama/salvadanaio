@@ -8,7 +8,7 @@ import {
   usePublicClient,
   useSwitchChain,
 } from "wagmi";
-import { parseUnits, formatUnits, maxUint256 } from "viem";
+import { parseUnits, formatUnits } from "viem";
 import {
   CONTRACTS,
   VAULT_ABI,
@@ -127,7 +127,7 @@ export function useVault() {
           address: CONTRACTS.usdc,
           abi: ERC20_ABI,
           functionName: "approve",
-          args: [CONTRACTS.vault, maxUint256], // infinite approval: one signature, reused on later deposits
+          args: [CONTRACTS.vault, parsedAmount], // approve exactly what we deposit — no scary "unlimited" cap
         });
         // Deposit must not send until the approval has mined, or it reverts.
         await publicClient?.waitForTransactionReceipt({ hash: approveTxHash });

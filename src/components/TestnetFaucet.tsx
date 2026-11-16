@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useWriteContract, usePublicClient } from "wagmi";
 import { parseUnits } from "viem";
 import { CONTRACTS, AAVE_FAUCET_ABI, USDC_DECIMALS } from "@/lib/constants";
 
@@ -12,6 +12,7 @@ interface TestnetFaucetProps {
 export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
   const { address } = useAccount();
   const { writeContractAsync } = useWriteContract();
+  const publicClient = usePublicClient();
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -20,18 +21,19 @@ export default function TestnetFaucet({ onMinted }: TestnetFaucetProps) {
     setIsLoading(true);
     setSuccess(false);
     try {
-      await writeContractAsync({
+      // Regular tx (user pays gas). Gasless via the paymaster is a mainnet
+      // feature — Coinbase's wallet refuses sponsored sendCalls on Base Sepolia
+      // (known bug base/account-sdk#363), so on testnet we send normally.
+      const hash = await writeContractAsync({
         address: CONTRACTS.faucet,
         abi: AAVE_FAUCET_ABI,
         functionName: "mint",
         args: [CONTRACTS.usdc, address, parseUnits("1000", USDC_DECIMALS)],
       });
+      await publicClient?.waitForTransactionReceipt({ hash });
       setSuccess(true);
-      // Give the tx a moment to be indexed before refetching balances.
-      setTimeout(() => {
-        onMinted();
-        setSuccess(false);
-      }, 3000);
+      onMinted();
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error("Faucet error:", err);
     } finally {
