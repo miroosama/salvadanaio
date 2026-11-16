@@ -1,6 +1,6 @@
 "use client";
 
-import { usePrivy } from "@privy-io/react-auth";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import Dashboard from "@/components/Dashboard";
 import BankComparison from "@/components/BankComparison";
 import Header from "@/components/Header";
@@ -13,9 +13,13 @@ import {
 } from "@/lib/constants";
 
 export default function Home() {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { isConnected, isReconnecting } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
 
-  if (!ready) {
+  // wagmi has no `ready`; gate on auto-reconnect so we don't flash the
+  // logged-out UI before a returning user's session is restored.
+  if (isReconnecting) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-canvas">
         <div className="w-8 h-8 border-3 border-terracotta-200 border-t-terracotta-500 rounded-full animate-spin" />
@@ -23,10 +27,10 @@ export default function Home() {
     );
   }
 
-  if (authenticated) {
+  if (isConnected) {
     return (
       <div className="min-h-screen bg-canvas flex flex-col">
-        <Header onLogout={logout} />
+        <Header onLogout={() => disconnect()} />
         <main className="flex-1 w-full max-w-md mx-auto px-4 pt-6">
           <Dashboard />
         </main>
@@ -99,10 +103,11 @@ export default function Home() {
 
         <div className="pt-2">
           <button
-            onClick={login}
-            className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold text-lg transition-colors shadow-lg shadow-terracotta-500/20"
+            onClick={() => connect({ connector: connectors[0] })}
+            disabled={isPending}
+            className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition-colors shadow-lg shadow-terracotta-500/20"
           >
-            Inizia a risparmiare
+            {isPending ? "Connessione..." : "Inizia a risparmiare"}
           </button>
           <p className="text-center text-warmGray-400 text-xs mt-3">
             Registrati con email. Nessun wallet richiesto.

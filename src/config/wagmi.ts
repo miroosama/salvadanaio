@@ -1,12 +1,12 @@
-import { http } from "wagmi";
+import { createConfig, http } from "wagmi";
 import { base, baseSepolia } from "wagmi/chains";
-// Privy ships its own createConfig — it registers the embedded wallet
-// as a connector. Using wagmi's createConfig here means wagmi never
-// sees the Privy wallet and every write silently fails.
-import { createConfig } from "@privy-io/wagmi";
+import { baseAccount } from "wagmi/connectors";
 
+// Base Account: a passkey-controlled ERC-4337 smart wallet — self-custody and
+// keyless (no app id, no account). `baseAccount` is wagmi's native connector.
 export const wagmiConfig = createConfig({
   chains: [base, baseSepolia],
+  connectors: [baseAccount({ appName: "Salvadanaio" })],
   transports: {
     [base.id]: http(),
     [baseSepolia.id]: http(),
