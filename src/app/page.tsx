@@ -13,7 +13,7 @@ import { useAaveApy } from "@/hooks/useAaveApy";
 
 export default function Home() {
   const { isConnected, isReconnecting } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
+  const { connect, connectors, isPending, error: connectError } = useConnect();
   const { disconnect } = useDisconnect();
   const { apy } = useAaveApy();
 
@@ -115,11 +115,17 @@ export default function Home() {
             disabled={isPending}
             className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition-colors shadow-lg shadow-terracotta-500/20"
           >
-            {isPending ? "Connessione..." : "Inizia a risparmiare"}
+            {isPending ? "Conferma nella finestra Coinbase…" : "Inizia a risparmiare"}
           </button>
-          <p className="text-center text-warmGray-400 text-xs">
-            Crea un account con una passkey. Niente seed phrase, niente app.
+          <p className="text-center text-warmGray-600 text-xs leading-relaxed">
+            Crei il tuo account in pochi secondi con Face ID o impronta. È un
+            wallet Coinbase: niente seed phrase, niente app da scaricare.
           </p>
+          {connectError && !isPending && (
+            <p className="text-center text-warmGray-500 text-xs">
+              Accesso non completato. Riprova pure quando vuoi.
+            </p>
+          )}
           {injectedConnector && (
             <button
               onClick={() => connect({ connector: injectedConnector })}

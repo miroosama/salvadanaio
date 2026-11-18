@@ -146,7 +146,7 @@ export default function WithdrawModal({
             />
           </div>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-warmGray-400 text-xs">
+            <span className="text-warmGray-600 text-xs">
               Disponibile: {parseFloat(vaultBalance).toFixed(2)} USDC
             </span>
             <button
@@ -214,6 +214,11 @@ export default function WithdrawModal({
             "Preleva"
           )}
         </button>
+        {!isLoading && (
+          <p className="text-center text-warmGray-600 text-xs mt-3">
+            Si aprirà una finestra Coinbase per confermare.
+          </p>
+        )}
           </>
         )}
       </div>

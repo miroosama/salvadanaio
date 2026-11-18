@@ -148,7 +148,7 @@ export default function DepositModal({
             />
           </div>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-warmGray-400 text-xs">
+            <span className="text-warmGray-600 text-xs">
               Disponibile: {parseFloat(usdcBalance).toFixed(2)} USDC
             </span>
             <div className="flex gap-2">
@@ -182,7 +182,7 @@ export default function DepositModal({
                 +${yearlyNet.toFixed(2)}
               </span>
             </div>
-            <p className="text-warmGray-400 text-xs mt-1">
+            <p className="text-warmGray-600 text-xs mt-1">
               Netto stimato dopo le tasse (33% + ~0,2% IC) · non è consulenza
               fiscale
             </p>
@@ -219,6 +219,11 @@ export default function DepositModal({
             "Deposita"
           )}
         </button>
+        {!isLoading && (
+          <p className="text-center text-warmGray-600 text-xs mt-3">
+            Si aprirà una finestra Coinbase per confermare.
+          </p>
+        )}
           </>
         )}
       </div>

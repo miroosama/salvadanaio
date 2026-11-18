@@ -74,7 +74,7 @@ export default function BankComparison() {
         </table>
       </div>
 
-      <p className="text-warmGray-400 text-xs mt-3 leading-relaxed">
+      <p className="text-warmGray-600 text-xs mt-3 leading-relaxed">
         * Il nostro tasso è quello Aave live su Base, variabile. Il netto è
         stimato con la tassazione più severa per le crypto (33% + ~0,2% annuo di
         imposta sul valore); gli interessi bancari sono tassati al 26%. Le altre

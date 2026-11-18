@@ -7,7 +7,7 @@ export default function Footer() {
         <span className="font-display text-sm text-warmGray-500">
           Salvadanaio
         </span>
-        <p className="text-xs text-warmGray-400">
+        <p className="text-xs text-warmGray-600">
           {IS_TESTNET ? "Alpha · Base Sepolia" : "Alpha · Base"}
         </p>
         {/* Future: cost-transparency ("cosa ci costa"), GitHub, how-it-works,

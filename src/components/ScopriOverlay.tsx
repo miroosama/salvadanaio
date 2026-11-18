@@ -247,6 +247,16 @@ function Guida() {
       </section>
 
       <section className="space-y-2">
+        <h2 className="font-display text-xl text-ink">Il tuo account</h2>
+        <p>
+          Il tuo account è un wallet Coinbase Smart Wallet: lo crei e lo sblocchi
+          con Face ID o impronta — una passkey — senza seed phrase da annotare.
+          Il recupero dell&apos;accesso passa da Coinbase (keys.coinbase.com);
+          noi non deteniamo le tue chiavi e non possiamo accedere al tuo account.
+        </p>
+      </section>
+
+      <section className="space-y-2">
         <h2 className="font-display text-xl text-ink">Entrare e uscire</h2>
         <p>
           Per iniziare, porti dei dollari digitali (USDC) nel tuo account e li

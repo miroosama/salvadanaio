@@ -152,7 +152,7 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
                 </button>
               </div>
 
-              <p className="text-warmGray-400 text-xs mb-1">Indirizzo</p>
+              <p className="text-warmGray-600 text-xs mb-1">Indirizzo</p>
               <button
                 onClick={copyAddress}
                 className="w-full text-left bg-warmGray-100 hover:bg-warmGray-200 rounded-xl px-4 py-3 transition-colors"

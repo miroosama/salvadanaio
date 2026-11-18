@@ -108,8 +108,8 @@ export default function YieldTicker({
   if (!hasDeposit) {
     return (
       <div className="text-center py-8">
-        <p className="text-warmGray-400 text-lg">Il tuo salvadanaio è vuoto</p>
-        <p className="text-warmGray-300 text-sm mt-1">
+        <p className="text-warmGray-700 text-lg">Il tuo salvadanaio è vuoto</p>
+        <p className="text-warmGray-500 text-sm mt-1">
           Deposita USDC per iniziare a guadagnare
         </p>
       </div>
@@ -134,7 +134,7 @@ export default function YieldTicker({
         {isStale ? (
           <>
             <span className="inline-block w-2 h-2 rounded-full bg-warmGray-300" />
-            <span className="text-warmGray-400 text-sm font-medium">
+            <span className="text-warmGray-600 text-sm font-medium">
               Aggiornamento…
             </span>
           </>

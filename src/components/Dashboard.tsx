@@ -85,7 +85,7 @@ export default function Dashboard() {
             </span>
           </div>
         </div>
-        <p className="text-xs text-warmGray-400 -mt-1 mb-2">
+        <p className="text-xs text-warmGray-600 -mt-1 mb-2">
           {IS_TESTNET
             ? "Rendimento Aave reale su Base mainnet · su testnet non è rappresentativo"
             : "Rendimento Aave in tempo reale · variabile"}
@@ -99,7 +99,7 @@ export default function Dashboard() {
           isStale={isPositionError}
         />
 
-        <p className="text-center text-warmGray-400 text-xs mt-4 leading-relaxed">
+        <p className="text-center text-warmGray-600 text-xs mt-4 leading-relaxed">
           Questo è in dollari (USDC) · il valore in euro può salire o scendere
         </p>
 
@@ -121,12 +121,12 @@ export default function Dashboard() {
         </div>
 
         {!hasUsdc && !hasDeposit && !IS_TESTNET && (
-          <p className="text-warmGray-400 text-xs text-center mt-3">
+          <p className="text-warmGray-600 text-xs text-center mt-3">
             Per iniziare, acquista USDC con il pulsante sopra
           </p>
         )}
         {!hasUsdc && !hasDeposit && IS_TESTNET && (
-          <p className="text-warmGray-400 text-xs text-center mt-3">
+          <p className="text-warmGray-600 text-xs text-center mt-3">
             Usa il faucet qui sopra per ricevere USDC di test
           </p>
         )}
@@ -134,7 +134,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-cream rounded-xl border border-mint-100 p-4">
-          <p className="text-warmGray-400 text-xs font-medium">
+          <p className="text-warmGray-600 text-xs font-medium">
             Nel salvadanaio
           </p>
           {isPositionLoading ? (
@@ -146,7 +146,7 @@ export default function Dashboard() {
           )}
         </div>
         <div className="bg-cream rounded-xl border border-mint-100 p-4">
-          <p className="text-warmGray-400 text-xs font-medium">
+          <p className="text-warmGray-600 text-xs font-medium">
             USDC nel wallet
           </p>
           {isPositionLoading ? (
