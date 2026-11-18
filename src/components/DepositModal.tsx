@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SALVADANAIO_ESTIMATED_RATE,
-  ITALIAN_CRYPTO_TAX_RATE,
-  explorerTxUrl,
-  EXPLORER_NAME,
-} from "@/lib/constants";
+import { netYield, explorerTxUrl, EXPLORER_NAME } from "@/lib/constants";
+import { useAaveApy } from "@/hooks/useAaveApy";
 import { parseTxError, type FriendlyError } from "@/lib/errors";
 import type { DepositStep } from "@/hooks/useVault";
 import { CheckIcon } from "@/components/Icons";
@@ -32,12 +28,12 @@ export default function DepositModal({
   const [step, setStep] = useState<DepositStep | null>(null);
   const [error, setError] = useState<FriendlyError | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const { apy } = useAaveApy();
 
   if (!isOpen) return null;
 
   const numAmount = parseFloat(amount) || 0;
-  const yearlyGross = numAmount * (SALVADANAIO_ESTIMATED_RATE / 100);
-  const yearlyNet = yearlyGross * (1 - ITALIAN_CRYPTO_TAX_RATE / 100);
+  const yearlyNet = numAmount * (netYield(apy) / 100);
   const monthlyNet = yearlyNet / 12;
 
   const reset = () => {
@@ -187,7 +183,8 @@ export default function DepositModal({
               </span>
             </div>
             <p className="text-warmGray-400 text-xs mt-1">
-              Netto stimato dopo il 26% di tassazione su plusvalenze
+              Netto stimato dopo le tasse (33% + ~0,2% IC) · non è consulenza
+              fiscale
             </p>
           </div>
         )}

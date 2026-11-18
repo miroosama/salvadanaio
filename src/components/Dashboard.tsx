@@ -8,11 +8,8 @@ import DepositModal from "./DepositModal";
 import WithdrawModal from "./WithdrawModal";
 import TestnetFaucet from "./TestnetFaucet";
 import { LockIcon } from "@/components/Icons";
-import {
-  SALVADANAIO_ESTIMATED_RATE,
-  ITALIAN_CRYPTO_TAX_RATE,
-  IS_TESTNET,
-} from "@/lib/constants";
+import { IS_TESTNET, netYield } from "@/lib/constants";
+import { useAaveApy } from "@/hooks/useAaveApy";
 
 export default function Dashboard() {
   const {
@@ -36,8 +33,8 @@ export default function Dashboard() {
 
   const hasDeposit = parseFloat(vaultBalance) > 0;
   const hasUsdc = parseFloat(usdcBalance) > 0;
-  const netRate =
-    SALVADANAIO_ESTIMATED_RATE * (1 - ITALIAN_CRYPTO_TAX_RATE / 100);
+  const { apy } = useAaveApy();
+  const netRate = netYield(apy);
 
   const handleDeposit = async (
     amount: string,
@@ -80,13 +77,18 @@ export default function Dashboard() {
           <span className="text-sm text-warmGray-500">Tasso attuale</span>
           <div className="flex items-center gap-2">
             <span className="bg-mint-50 text-mint-700 text-sm font-semibold px-3 py-1 rounded-full">
-              ~{SALVADANAIO_ESTIMATED_RATE}% lordo
+              ~{apy.toFixed(1)}% lordo
             </span>
             <span className="bg-warmGray-100 text-warmGray-600 text-xs px-2 py-1 rounded-full">
               ~{netRate.toFixed(1)}% netto
             </span>
           </div>
         </div>
+        <p className="text-xs text-warmGray-400 -mt-1 mb-2">
+          {IS_TESTNET
+            ? "Rendimento Aave reale su Base mainnet · su testnet non è rappresentativo"
+            : "Rendimento Aave in tempo reale · variabile"}
+        </p>
 
         <YieldTicker
           displayValue={displayValue}

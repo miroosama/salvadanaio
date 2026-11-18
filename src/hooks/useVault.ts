@@ -14,10 +14,10 @@ import {
   VAULT_ABI,
   ERC20_ABI,
   USDC_DECIMALS,
-  SALVADANAIO_ESTIMATED_RATE,
   ACTIVE_CHAIN,
   CHAIN_LABEL,
 } from "@/lib/constants";
+import { useAaveApy } from "./useAaveApy";
 
 export type DepositStep = "approving" | "depositing";
 
@@ -90,6 +90,9 @@ export function useVault() {
       (!!vaultShares && vaultShares > 0n && isVaultBalanceLoading));
 
   // Cosmetic per-second counter so the balance visibly ticks up between reads.
+  // Counter ticks at the ACTIVE chain's live Aave APY so it matches real vault
+  // growth (on testnet that's ~flat — real yield is negligible there).
+  const { apy: activeApy } = useAaveApy(ACTIVE_CHAIN.id);
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -103,7 +106,7 @@ export function useVault() {
     // (otherwise it reads $0.00 for the first second).
     setDisplayValue(baseAmount);
 
-    const perSecondRate = SALVADANAIO_ESTIMATED_RATE / 100 / 365 / 24 / 3600;
+    const perSecondRate = activeApy / 100 / 365 / 24 / 3600;
     const startTime = Date.now();
 
     const interval = setInterval(() => {
@@ -112,7 +115,7 @@ export function useVault() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [formattedVaultBalance]);
+  }, [formattedVaultBalance, activeApy]);
 
   const deposit = useCallback(
     async (amount: string, onStep?: (step: DepositStep) => void) => {

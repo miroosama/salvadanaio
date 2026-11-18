@@ -7,15 +7,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PiggyLogo from "@/components/PiggyLogo";
 import { TrendIcon, BoltIcon, LockIcon, FlagIcon } from "@/components/Icons";
-import {
-  SALVADANAIO_ESTIMATED_RATE,
-  ITALIAN_CRYPTO_TAX_RATE,
-} from "@/lib/constants";
+import { netYield } from "@/lib/constants";
+import { useAaveApy } from "@/hooks/useAaveApy";
 
 export default function Home() {
   const { isConnected, isReconnecting } = useAccount();
   const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { apy } = useAaveApy();
 
   // Two ways in (wallet freedom): the Coinbase Smart Wallet passkey for newcomers,
   // or the user's own injected wallet (MetaMask etc.) if they already self-custody.
@@ -45,8 +44,7 @@ export default function Home() {
     );
   }
 
-  const netRate =
-    SALVADANAIO_ESTIMATED_RATE * (1 - ITALIAN_CRYPTO_TAX_RATE / 100);
+  const netRate = netYield(apy);
 
   return (
     <div className="min-h-screen bg-canvas flex flex-col">
@@ -60,8 +58,8 @@ export default function Home() {
             <span className="text-terracotta-500">digitale</span>
           </h1>
           <p className="text-warmGray-500 text-lg leading-relaxed max-w-xs mx-auto">
-            Guadagna fino al ~{netRate.toFixed(0)}% netto sui tuoi risparmi.
-            Meglio di qualsiasi conto deposito.
+            Guadagna ~{netRate.toFixed(1)}% netto sui tuoi risparmi. Nessun
+            vincolo, prelievi quando vuoi.
           </p>
         </div>
 
@@ -69,8 +67,8 @@ export default function Home() {
           {[
             {
               Icon: TrendIcon,
-              title: `~${SALVADANAIO_ESTIMATED_RATE}% annuo`,
-              desc: "Rendimenti superiori a qualsiasi banca italiana",
+              title: `~${apy.toFixed(1)}% annuo`,
+              desc: "Interessi che maturano ogni secondo su Aave",
             },
             {
               Icon: BoltIcon,
@@ -79,13 +77,13 @@ export default function Home() {
             },
             {
               Icon: LockIcon,
-              title: "Trasparente e sicuro",
-              desc: "Basato su Aave, il protocollo DeFi più grande al mondo",
+              title: "Auto-custodia",
+              desc: "Le chiavi sono tue. Noi non tocchiamo mai i tuoi fondi.",
             },
             {
               Icon: FlagIcon,
               title: "Pensato per l'Italia",
-              desc: "Tassazione chiara, tutto in italiano, senza sorprese",
+              desc: "Tassazione chiara, tutto in italiano",
             },
           ].map((item) => (
             <div

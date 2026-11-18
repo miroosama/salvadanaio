@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  BANK_RATES,
-  SALVADANAIO_ESTIMATED_RATE,
-  ITALIAN_CRYPTO_TAX_RATE,
-} from "@/lib/constants";
+import { BANK_RATES, netYield } from "@/lib/constants";
+import { useAaveApy } from "@/hooks/useAaveApy";
 import PiggyLogo from "@/components/PiggyLogo";
 
 export default function BankComparison() {
-  const salvadanaioNetRate =
-    SALVADANAIO_ESTIMATED_RATE * (1 - ITALIAN_CRYPTO_TAX_RATE / 100);
+  const { apy } = useAaveApy();
+  const salvadanaioNetRate = netYield(apy);
 
   return (
     <div className="w-full">
@@ -43,7 +40,7 @@ export default function BankComparison() {
               </div>
             </td>
             <td className="text-right py-3 px-3 font-semibold text-mint-700 whitespace-nowrap">
-              {SALVADANAIO_ESTIMATED_RATE.toFixed(1)}%
+              {apy.toFixed(1)}%
             </td>
             <td className="text-right py-3 px-3 font-semibold text-mint-700 whitespace-nowrap">
               ~{salvadanaioNetRate.toFixed(1)}%
@@ -77,9 +74,9 @@ export default function BankComparison() {
       </table>
 
       <p className="text-warmGray-400 text-xs mt-3 leading-relaxed">
-        * Tasso stimato, variabile in base alle condizioni di mercato. Le banche
-        applicano una ritenuta del 20%, i proventi crypto sono tassati al 26%
-        sulle plusvalenze.
+        * Tasso Aave live su Base mainnet, variabile. Gli interessi bancari sono
+        tassati al 26%; le plusvalenze crypto al 33% (più ~0,2% annuo di imposta
+        sul valore). Stima, non è consulenza fiscale.
       </p>
     </div>
   );

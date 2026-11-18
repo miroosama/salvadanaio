@@ -60,14 +60,25 @@ export function explorerTxUrl(hash: string): string {
 
 // Italian bank rates for comparison
 export const BANK_RATES = [
-  { name: "Intesa Sanpaolo", grossRate: 2.1, taxRate: 20, lockup: "6-12 mesi", minimum: "€500" },
-  { name: "Banca Progetto", grossRate: 3.0, taxRate: 20, lockup: "32 giorni", minimum: "€1" },
-  { name: "UniCredit", grossRate: 1.5, taxRate: 20, lockup: "12 mesi", minimum: "€5.000" },
-  { name: "Poste Italiane", grossRate: 1.0, taxRate: 20, lockup: "12 mesi", minimum: "€500" },
+  { name: "Intesa Sanpaolo", grossRate: 2.1, taxRate: 26, lockup: "6-12 mesi", minimum: "€500" },
+  { name: "Banca Progetto", grossRate: 3.0, taxRate: 26, lockup: "32 giorni", minimum: "€1" },
+  { name: "UniCredit", grossRate: 1.5, taxRate: 26, lockup: "12 mesi", minimum: "€5.000" },
+  { name: "Poste Italiane", grossRate: 1.0, taxRate: 26, lockup: "12 mesi", minimum: "€500" },
 ] as const;
 
+// Fallback mainnet yield, shown only while the live Aave APY loads (the real rate
+// is read on-chain from Base MAINNET — see useAaveApy; testnet yield is ~0, moot).
 export const SALVADANAIO_ESTIMATED_RATE = 5.5;
-export const ITALIAN_CRYPTO_TAX_RATE = 26;
+
+// Italy, 2026: crypto gains taxed at 33%, plus a 0.2%/yr IC wealth tax on holdings.
+export const ITALIAN_CRYPTO_TAX_RATE = 33;
+export const ITALIAN_IC_RATE = 0.2;
+
+// Honest net yield after Italian taxes: gains at 33%, minus the 0.2% IC on
+// principal. Not tax advice — the UI carries a "consulta un commercialista" note.
+export function netYield(grossRatePct: number): number {
+  return grossRatePct * (1 - ITALIAN_CRYPTO_TAX_RATE / 100) - ITALIAN_IC_RATE;
+}
 
 // ABIs
 export const VAULT_ABI = [
