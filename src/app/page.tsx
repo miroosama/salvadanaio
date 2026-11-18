@@ -37,7 +37,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-canvas flex flex-col">
         <Header onLogout={() => disconnect()} />
-        <main className="flex-1 w-full max-w-md mx-auto px-4 pt-6">
+        <main className="flex-1 w-full max-w-md sm:max-w-lg mx-auto px-4 pt-6">
           <Dashboard />
         </main>
         <Footer />
@@ -51,7 +51,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-canvas flex flex-col">
       <Header />
-      <main className="flex-1 w-full max-w-md mx-auto px-4 py-12 space-y-10">
+      <main className="flex-1 w-full max-w-md sm:max-w-lg mx-auto px-4 py-12 space-y-10">
         <div className="text-center space-y-4">
           <PiggyLogo className="w-20 h-20 mx-auto" />
           <h1 className="font-display text-4xl text-ink leading-tight">
@@ -103,7 +103,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="bg-cream rounded-2xl border border-mint-100 p-5">
+        <div className="bg-cream rounded-2xl border border-mint-100 p-6">
           <BankComparison />
         </div>
 

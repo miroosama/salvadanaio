@@ -53,7 +53,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-md sm:max-w-lg mx-auto space-y-6">
       {isConnected && !isCorrectChain && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-3">
           <p className="text-amber-800 text-sm">
@@ -159,15 +159,15 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="bg-cream rounded-2xl border border-mint-100 p-5">
+      <div className="bg-cream rounded-2xl border border-mint-100 p-6">
         <BankComparison />
       </div>
 
-      <details className="bg-cream rounded-2xl border border-mint-100 p-5">
+      <details className="bg-cream rounded-2xl border border-mint-100 p-6">
         <summary className="font-display text-lg text-warmGray-800 cursor-pointer select-none">
           Come funziona?
         </summary>
-        <div className="mt-4 space-y-4 text-sm text-warmGray-600 leading-relaxed">
+        <div className="mt-6 space-y-4 text-sm text-warmGray-600 leading-relaxed">
           <div className="flex gap-3">
             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
               1

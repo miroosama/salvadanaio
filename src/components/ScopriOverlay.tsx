@@ -99,14 +99,15 @@ export default function ScopriOverlay() {
         setTab(id);
         scrollRef.current?.scrollTo({ top: 0 });
       }}
-      className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-colors ${
-        tab === id
-          ? "bg-white text-ink shadow-sm"
-          : "text-warmGray-500 hover:text-warmGray-700"
+      className={`relative pb-3 text-sm font-semibold tracking-wide transition-colors ${
+        tab === id ? "text-ink" : "text-warmGray-400 hover:text-warmGray-600"
       }`}
       aria-pressed={tab === id}
     >
       {label}
+      {tab === id && (
+        <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-terracotta-500" />
+      )}
     </button>
   );
 
@@ -124,18 +125,18 @@ export default function ScopriOverlay() {
 
       <div
         ref={panelRef}
-        className="relative bg-canvas w-full h-[92vh] rounded-t-3xl sm:h-auto sm:max-h-[85vh] sm:max-w-lg sm:rounded-3xl flex flex-col shadow-xl"
+        className="relative bg-card border-[1.5px] border-mint-300 w-full max-h-[88vh] rounded-t-2xl sm:max-h-[82vh] sm:max-w-lg sm:rounded-2xl flex flex-col shadow-xl"
       >
         {/* Drag handle + close */}
         <div
-          className="pt-3 px-5 shrink-0"
+          className="pt-3 px-6 shrink-0"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
           <div className="mx-auto w-10 h-1.5 rounded-full bg-warmGray-200 sm:hidden" />
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex-1 flex gap-1 bg-warmGray-100 rounded-xl p-1 mr-3">
+          <div className="flex items-end justify-between mt-4 border-b border-warmGray-200/70">
+            <div className="flex gap-6">
               {tabBtn("chi", "Chi siamo")}
               {tabBtn("guida", "Guida")}
             </div>
@@ -143,7 +144,7 @@ export default function ScopriOverlay() {
               ref={closeBtnRef}
               onClick={close}
               aria-label="Chiudi"
-              className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full text-warmGray-400 hover:text-warmGray-700 hover:bg-warmGray-100 text-2xl leading-none transition-colors"
+              className="mb-1 w-9 h-9 shrink-0 flex items-center justify-center rounded-full text-warmGray-400 hover:text-warmGray-700 hover:bg-warmGray-100 text-2xl leading-none transition-colors"
             >
               ×
             </button>
