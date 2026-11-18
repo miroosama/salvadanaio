@@ -45,6 +45,7 @@ export function useVault() {
     data: vaultShares,
     refetch: refetchShares,
     isLoading: isSharesLoading,
+    isError: isSharesError,
   } = useReadContract({
     address: CONTRACTS.vault,
     abi: VAULT_ABI,
@@ -58,6 +59,7 @@ export function useVault() {
     data: vaultBalance,
     refetch: refetchVaultBalance,
     isLoading: isVaultBalanceLoading,
+    isError: isVaultBalanceError,
   } = useReadContract({
     address: CONTRACTS.vault,
     abi: VAULT_ABI,
@@ -88,6 +90,10 @@ export function useVault() {
     !!address &&
     (isSharesLoading ||
       (!!vaultShares && vaultShares > 0n && isVaultBalanceLoading));
+
+  // A read failed — surface it so the ticker freezes with an "aggiornamento…"
+  // state instead of extrapolating growth off a stale/dead feed (honesty guard).
+  const isPositionError = isSharesError || isVaultBalanceError;
 
   // Live Aave APY on the active chain — the fallback slope for the balance
   // ticker. The ticker itself animates in YieldTicker via a ref (no per-frame
@@ -171,6 +177,7 @@ export function useVault() {
     vaultBalance: formattedVaultBalance,
     activeApy,
     isPositionLoading,
+    isPositionError,
     deposit,
     withdraw,
     refetchAll,

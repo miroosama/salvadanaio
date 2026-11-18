@@ -7,6 +7,7 @@ interface YieldTickerProps {
   apy: number; // fallback slope (%/yr) until a real share-price rate is observed
   hasDeposit: boolean;
   isLoading?: boolean;
+  isStale?: boolean; // a balance read errored — freeze, don't extrapolate growth
 }
 
 function parts(v: number) {
@@ -21,6 +22,7 @@ export default function YieldTicker({
   apy,
   hasDeposit,
   isLoading = false,
+  isStale = false,
 }: YieldTickerProps) {
   const dollarsRef = useRef<HTMLSpanElement>(null);
   const subRef = useRef<HTMLSpanElement>(null);
@@ -44,27 +46,37 @@ export default function YieldTicker({
   // rerenders. Time-based (performance.now) so it stays correct across
   // backgrounded tabs and variable frame rates.
   useEffect(() => {
-    if (!hasDeposit || isLoading) return;
+    // Freeze when there's no deposit, the position is loading, or a read
+    // errored (isStale) — never extrapolate growth off a dead/unknown feed.
+    if (!hasDeposit || isLoading || isStale) return;
+    lastFrame.current = performance.now();
     let raf = 0;
     const tick = () => {
       const now = performance.now();
       const { value: V, t: T } = anchor.current;
 
-      // Slope = real observed share-price growth when we have two anchors far
-      // enough apart (ground truth); otherwise the quoted APY. Clamped vs noise.
+      // Slope = the real observed share-price growth once we have two anchors
+      // far enough apart (ground truth). A non-positive observation means growth
+      // stalled or the value dropped (withdrawal / loss) — hold flat at the true
+      // value, never re-inject optimistic APY on top of a drop. Only before any
+      // real observation do we fall back to the quoted APY. Upper-clamp guards
+      // against a noisy tiny-dt reading.
       let rate = perSec(apy);
       const p = prev.current;
       if (p && p.value > 0 && T - p.t > 2000) {
         const obs = (V - p.value) / (p.value * ((T - p.t) / 1000));
-        if (obs >= 0 && obs < perSec(100)) rate = obs;
+        if (obs < perSec(100)) rate = Math.max(0, obs);
       }
 
       // Ease toward the time-based target so a re-anchor correction glides in
-      // over ~250ms instead of snapping; never tick backward (feels like growth).
+      // over ~250ms instead of snapping.
       const target = V * (1 + rate * ((now - T) / 1000));
       const k = 1 - Math.exp(-(now - lastFrame.current) / 250);
       lastFrame.current = now;
       shown.current += (target - shown.current) * k;
+      // Floor at the current true anchor: kills sub-read float jitter. Since V
+      // drops on a lower re-anchor, this never suppresses a REAL decrease — the
+      // ticker eases down to the new truth and shows it.
       if (shown.current < V) shown.current = V;
 
       const { dollars, sub } = parts(shown.current);
@@ -75,7 +87,7 @@ export default function YieldTicker({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [hasDeposit, isLoading, apy]);
+  }, [hasDeposit, isLoading, isStale, apy]);
 
   if (isLoading) {
     return (
@@ -119,10 +131,21 @@ export default function YieldTicker({
         </span>
       </div>
       <div className="mt-3 flex items-center justify-center gap-2">
-        <span className="inline-block w-2 h-2 rounded-full bg-mint-300 animate-pulse" />
-        <span className="text-mint-600 text-sm font-medium">
-          Sta crescendo in tempo reale
-        </span>
+        {isStale ? (
+          <>
+            <span className="inline-block w-2 h-2 rounded-full bg-warmGray-300" />
+            <span className="text-warmGray-400 text-sm font-medium">
+              Aggiornamento…
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="inline-block w-2 h-2 rounded-full bg-mint-300 animate-pulse" />
+            <span className="text-mint-600 text-sm font-medium">
+              Sta crescendo in tempo reale
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

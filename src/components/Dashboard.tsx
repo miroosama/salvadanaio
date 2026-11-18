@@ -23,6 +23,7 @@ export default function Dashboard() {
     vaultBalance,
     activeApy,
     isPositionLoading,
+    isPositionError,
     deposit,
     withdraw,
     refetchAll,
@@ -95,7 +96,12 @@ export default function Dashboard() {
           apy={activeApy}
           hasDeposit={hasDeposit}
           isLoading={isPositionLoading}
+          isStale={isPositionError}
         />
+
+        <p className="text-center text-warmGray-400 text-xs mt-4 leading-relaxed">
+          Questo è in dollari (USDC) · il valore in euro può salire o scendere
+        </p>
 
         <div className="flex gap-3 mt-6">
           <button
