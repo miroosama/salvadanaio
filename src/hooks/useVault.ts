@@ -76,6 +76,17 @@ export function useVault() {
     query: { enabled: !!address },
   });
 
+  // How much the user can withdraw *right now* — Aave caps this by the pool's
+  // available liquidity, so in the rare high-utilization moment it's below the
+  // full balance. Lets the withdraw flow show "disponibile ora" + avoid a revert.
+  const { data: maxWithdraw, refetch: refetchMaxWithdraw } = useReadContract({
+    address: CONTRACTS.vault,
+    abi: VAULT_ABI,
+    functionName: "maxWithdraw",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+
   const formattedUsdcBalance = usdcBalance
     ? formatUnits(usdcBalance as bigint, USDC_DECIMALS)
     : "0";
@@ -83,6 +94,13 @@ export function useVault() {
   const formattedVaultBalance = vaultBalance
     ? formatUnits(vaultBalance as bigint, USDC_DECIMALS)
     : "0";
+
+  // Fall back to the full balance until the read settles, so we never falsely
+  // tell the user they can withdraw less than they actually can.
+  const formattedMaxWithdraw =
+    maxWithdraw !== undefined
+      ? formatUnits(maxWithdraw as bigint, USDC_DECIMALS)
+      : formattedVaultBalance;
 
   // Still resolving until shares settle — and, if there are shares, until the
   // asset conversion settles too. Drives the balance skeleton.
@@ -164,7 +182,14 @@ export function useVault() {
     refetchShares();
     refetchVaultBalance();
     refetchAllowance();
-  }, [refetchUsdc, refetchShares, refetchVaultBalance, refetchAllowance]);
+    refetchMaxWithdraw();
+  }, [
+    refetchUsdc,
+    refetchShares,
+    refetchVaultBalance,
+    refetchAllowance,
+    refetchMaxWithdraw,
+  ]);
 
   return {
     isConnected,
@@ -175,6 +200,7 @@ export function useVault() {
     activeChainLabel: CHAIN_LABEL,
     usdcBalance: formattedUsdcBalance,
     vaultBalance: formattedVaultBalance,
+    maxWithdraw: formattedMaxWithdraw,
     activeApy,
     isPositionLoading,
     isPositionError,

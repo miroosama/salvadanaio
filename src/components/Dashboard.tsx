@@ -14,13 +14,13 @@ import { useAaveApy } from "@/hooks/useAaveApy";
 export default function Dashboard() {
   const {
     isConnected,
-    address,
     isCorrectChain,
     switchToActiveChain,
     isSwitchingChain,
     activeChainLabel,
     usdcBalance,
     vaultBalance,
+    maxWithdraw,
     activeApy,
     isPositionLoading,
     isPositionError,
@@ -202,9 +202,10 @@ export default function Dashboard() {
               <LockIcon className="w-3.5 h-3.5" />
             </span>
             <p>
-              <strong>Sempre al sicuro</strong> — i tuoi fondi restano sulla
-              blockchain, non in mano a una banca. Il codice è aperto e
-              verificabile da chiunque.
+              <strong>Sempre nelle tue mani</strong> — i tuoi fondi restano
+              tuoi. Le chiavi sono tue, noi non possiamo né toccarli né
+              bloccarli. Lavorano sui contratti di Aave, pubblici e verificabili
+              sulla blockchain: ogni operazione è tracciabile su BaseScan.
             </p>
           </div>
         </div>
@@ -220,6 +221,7 @@ export default function Dashboard() {
         isOpen={showWithdraw}
         onClose={() => setShowWithdraw(false)}
         vaultBalance={vaultBalance}
+        maxWithdraw={maxWithdraw}
         onWithdraw={handleWithdraw}
       />
     </div>

@@ -9,6 +9,7 @@ interface WithdrawModalProps {
   isOpen: boolean;
   onClose: () => void;
   vaultBalance: string;
+  maxWithdraw: string;
   onWithdraw: (amount: string, isMax?: boolean) => Promise<string | undefined>;
 }
 
@@ -16,6 +17,7 @@ export default function WithdrawModal({
   isOpen,
   onClose,
   vaultBalance,
+  maxWithdraw,
   onWithdraw,
 }: WithdrawModalProps) {
   const [amount, setAmount] = useState("");
@@ -26,6 +28,15 @@ export default function WithdrawModal({
   if (!isOpen) return null;
 
   const numAmount = parseFloat(amount) || 0;
+  const vaultNum = parseFloat(vaultBalance) || 0;
+  const maxNum = parseFloat(maxWithdraw) || 0;
+  const EPS = 1e-6;
+
+  // Aave can't cover the full balance right now (rare, high utilization). Only
+  // then do we surface the "disponibile ora" nuance — otherwise nothing shows.
+  const liquidityLimited = maxNum + EPS < vaultNum;
+  const exceedsAvailable = numAmount > maxNum + EPS;
+  const showLiquidityBlock = liquidityLimited && exceedsAvailable;
 
   const reset = () => {
     setAmount("");
@@ -39,28 +50,35 @@ export default function WithdrawModal({
     onClose();
   };
 
-  const handleWithdraw = async () => {
-    if (numAmount <= 0) {
-      setError({ title: "Inserisci un importo valido.", detail: "" });
-      return;
-    }
-    if (numAmount > parseFloat(vaultBalance)) {
-      setError({ title: "Importo superiore al saldo disponibile.", detail: "" });
-      return;
-    }
-
+  const submit = async (amt: string, isMax: boolean) => {
     setIsLoading(true);
     setError(null);
     try {
-      // Treat "everything" as a full redeem so rounding can't revert it
-      const isMax = numAmount >= parseFloat(vaultBalance);
-      const hash = await onWithdraw(amount, isMax);
+      const hash = await onWithdraw(amt, isMax);
       setTxHash(hash ?? null);
     } catch (err) {
       setError(parseTxError(err));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleWithdraw = async () => {
+    if (numAmount <= 0) {
+      setError({ title: "Inserisci un importo valido.", detail: "" });
+      return;
+    }
+    if (numAmount > vaultNum + EPS) {
+      setError({ title: "Importo superiore al saldo disponibile.", detail: "" });
+      return;
+    }
+    // Over what Aave can release right now: don't revert — the liquidity block
+    // and its "massimo disponibile" button handle it instead.
+    if (showLiquidityBlock) return;
+
+    // Treat "everything" as a full redeem so rounding can't revert it.
+    const isMax = numAmount >= vaultNum - EPS;
+    await submit(amount, isMax);
   };
 
   return (
@@ -140,12 +158,31 @@ export default function WithdrawModal({
           </div>
         </div>
 
-        <div className="bg-mint-50 border border-mint-200 rounded-xl p-4 mb-4">
-          <p className="text-warmGray-600 text-sm">
-            Prelievo istantaneo, nessun vincolo temporale. I tuoi fondi
-            tornano nel tuo wallet immediatamente.
-          </p>
-        </div>
+        {showLiquidityBlock ? (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4 space-y-3">
+            <p className="text-amber-800 text-sm leading-relaxed">
+              Al momento puoi prelevare subito{" "}
+              <span className="font-semibold">${maxNum.toFixed(2)}</span>. Il
+              resto si libera a breve, man mano che la liquidità torna
+              disponibile. Nessun vincolo, nessuna penale.
+            </p>
+            <button
+              onClick={() => submit(maxWithdraw, false)}
+              disabled={isLoading}
+              className="w-full py-3 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
+            >
+              Preleva il massimo disponibile (${maxNum.toFixed(2)})
+            </button>
+          </div>
+        ) : (
+          <div className="bg-mint-50 border border-mint-200 rounded-xl p-4 mb-4">
+            <p className="text-warmGray-600 text-sm leading-relaxed">
+              Prelievi senza vincoli né penali. L&apos;unico caso in cui un
+              prelievo attende è se il pool di Aave è momentaneamente pieno, cosa
+              rara che si risolve quando i prestiti vengono rimborsati.
+            </p>
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 px-1">
@@ -165,7 +202,7 @@ export default function WithdrawModal({
 
         <button
           onClick={handleWithdraw}
-          disabled={isLoading || numAmount <= 0}
+          disabled={isLoading || numAmount <= 0 || showLiquidityBlock}
           className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-lg transition-colors"
         >
           {isLoading ? (

@@ -160,33 +160,52 @@ export default function ScopriOverlay() {
   );
 }
 
+// Chi siamo is the closest thing to our "who we are" blog — bilingual on
+// purpose (Italian first, English below). The rest of the app stays Italian.
+const CHI_SIAMO_IT = [
+  "Salvadanaio nasce da un'idea semplice. I tuoi soldi dovrebbero crescere ed essere davvero tuoi, senza vincoli, senza trucchi, senza sorprese. Oggi hai due scelte, e ti deludono entrambe.",
+  "C'è la banca. Rende poco o niente, blocca i tuoi soldi con vincoli e penali, è lenta a restituirteli, ed è lei a decidere cosa puoi farne. I tuoi risparmi non sono mai davvero nelle tue mani.",
+  "E c'è la cripto com'è oggi, che spesso non è meglio. Commissioni nascoste che si mangiano i tuoi guadagni. Token creati solo per essere gonfiati e abbandonati. App che si dicono decentralizzate ma in realtà centralizzano la custodia legandola alla tua identità dietro il loro portale. Tante promesse, poca onestà.",
+  "Iniziare è semplice: un account smart facile, senza seed phrase e senza gergo tecnico, e senza commissioni, perché i costi di rete li copriamo noi. Non esiste nessun nostro token da gonfiare e abbandonare, solo i tuoi dollari che rendono davvero su Aave, uno dei protocolli più grandi e collaudati al mondo, aperto e verificabile, con numeri onesti al netto delle tasse. E i tuoi soldi sono sempre tuoi, liberi di spostarsi su qualsiasi wallet, quando vuoi, senza vincoli e senza niente che possiamo bloccare.",
+  "L'account smart è la via d'ingresso facile. Stiamo costruendo strumenti aperti per una vera auto-custodia, con le chiavi completamente nelle tue mani e pronte per il tuo hardware wallet, così diventare del tutto indipendente è qualcosa in cui cresci, non qualcosa che devi strapparci.",
+  "Non ci chiamiamo Salvadanaio per caso. È il salvadanaio che avevi da bambino, il primo posto dove hai messo i tuoi soldi. Facile da riempire, e facile da rompere nel momento in cui vuoi ciò che c'è dentro. È tutta qui la promessa: facile iniziare, gratis mettere i soldi, gratis portarli via. Salvadanaio è un progetto giovane e il primo pezzo di un piano più grande, un ecosistema in crescita di prodotti e strumenti DeFi. Lo costruiamo su basi solide — un onboarding vero, un onramp semplice, educazione finanziaria e una crescita costante — così tutto ciò che verrà dopo è resiliente e solido.",
+];
+
+const CHI_SIAMO_EN = [
+  "Salvadanaio started from a simple idea. Your money should grow and be truly yours, with no lock-ups, no tricks, no surprises. Today you get two choices, and both let you down.",
+  "There's the bank. It pays little or nothing, locks your money behind terms and penalties, is slow to give it back, and it decides what you can do with it. Your savings are never really in your hands.",
+  "And there's crypto as it is today, which often isn't any better. Hidden fees that eat your returns. Tokens made only to be pumped and dumped. Apps that call themselves decentralized while quietly centralizing custody by tying it to your identity behind their portal. Plenty of promises, little honesty.",
+  "Getting started is simple: an easy smart account with no seed phrase and no jargon, and no fees, because we cover the network costs ourselves. There's no token of ours to pump and dump, just your dollars earning real yield on Aave, one of the largest and most battle-tested protocols in the world, open and verifiable, at honest numbers after tax. And your money is always yours, free to move to any wallet, any time, with no strings and nothing we can freeze.",
+  "The smart account is the easy way in. We're building open tooling for true self-custody, your keys fully in your own hands and ready for your own hardware wallet, so going fully independent is something you grow into, never something you fight us for.",
+  "There's a reason we're called Salvadanaio. It's the piggybank you had as a kid, the first place you ever kept your own money. Easy to feed, and easy to smash open the moment you want what's inside. That's the whole promise: easy to start, free to put your money in, free to take it out. Salvadanaio is a young project and the first piece of a bigger plan, a growing ecosystem of DeFi products and tools. We're building it on a strong foundation — real onboarding, a simple onramp, financial literacy, and steady growth — so everything that comes next is resilient and sound.",
+];
+
 function ChiSiamo() {
   return (
-    <div className="space-y-4 text-warmGray-600 leading-relaxed">
-      <h2 className="font-display text-2xl text-ink">
-        I tuoi risparmi, come dovrebbero essere
-      </h2>
-      <p>
-        Salvadanaio nasce da un&apos;idea semplice: i tuoi soldi dovrebbero
-        crescere, senza vincoli e senza sorprese. In Italia i conti rendono poco
-        o niente, e spesso è la banca a decidere cosa puoi fare con i tuoi
-        risparmi.
-      </p>
-      <p>
-        Noi facciamo il contrario. Depositi quando vuoi, prelevi quando vuoi. I
-        fondi restano tuoi — le chiavi sono tue, noi non possiamo toccarli né
-        bloccarli. E copriamo noi i costi di rete, così non devi pensare alle
-        commissioni.
-      </p>
-      <p>
-        Dietro le quinte mettiamo i tuoi dollari digitali a rendita su Aave, uno
-        dei protocolli più grandi e collaudati al mondo. Un rendimento reale,
-        numeri onesti, tutto in italiano.
-      </p>
-      <p>
-        È un progetto giovane e in crescita. Ti raccontiamo sempre com&apos;è
-        fatto, senza nasconderci dietro parole difficili.
-      </p>
+    <div className="space-y-8 leading-relaxed">
+      <section className="space-y-4 text-warmGray-600">
+        <h2 className="font-display text-2xl text-ink">
+          I tuoi risparmi, come dovrebbero essere
+        </h2>
+        {CHI_SIAMO_IT.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </section>
+
+      <section className="space-y-4 text-warmGray-500 border-t border-warmGray-200/70 pt-8">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold tracking-widest uppercase text-warmGray-400">
+            English
+          </span>
+          <span className="flex-1 h-px bg-warmGray-200/70" />
+        </div>
+        <h2 className="font-display text-2xl text-warmGray-700">
+          Your savings, the way they should be
+        </h2>
+        {CHI_SIAMO_EN.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </section>
     </div>
   );
 }
@@ -233,6 +252,23 @@ function Guida() {
           Per iniziare, porti dei dollari digitali (USDC) nel tuo account e li
           depositi con un tocco. Per uscire, prelevi: i tuoi USDC tornano
           disponibili e puoi riconvertirli quando vuoi.
+        </p>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-display text-xl text-ink">Niente blocco</h2>
+        <p>
+          Nessun vincolo, nessuna penale. Depositi e prelevi quando vuoi, i tuoi
+          soldi restano sempre tuoi. A differenza di un conto deposito
+          vincolato, non c&apos;è una durata fissa né una penale per uscire.
+        </p>
+        <p>
+          L&apos;unico momento in cui un prelievo può richiedere un attimo è se
+          il pool di Aave è temporaneamente al massimo utilizzo. In quel caso
+          ritiri subito la parte disponibile e il resto si libera man mano che i
+          prestiti vengono rimborsati. Non è un vincolo e non ci sono penali, è
+          solo la liquidità del mercato che torna disponibile. Con USDC capita
+          raramente.
         </p>
       </section>
 
