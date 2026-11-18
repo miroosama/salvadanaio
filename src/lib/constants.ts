@@ -59,11 +59,22 @@ export function explorerTxUrl(hash: string): string {
 }
 
 // Italian bank rates for comparison
-export const BANK_RATES = [
-  { name: "Intesa Sanpaolo", grossRate: 2.1, taxRate: 26, lockup: "6-12 mesi", minimum: "€500" },
-  { name: "Banca Progetto", grossRate: 3.0, taxRate: 26, lockup: "32 giorni", minimum: "€1" },
-  { name: "UniCredit", grossRate: 1.5, taxRate: 26, lockup: "12 mesi", minimum: "€5.000" },
-  { name: "Poste Italiane", grossRate: 1.0, taxRate: 26, lockup: "12 mesi", minimum: "€500" },
+// Generic, indicative ranges for typical Italian retail options — no named
+// institutions (avoids comparative claims against a specific bank). Net figures
+// use the 26% interest tax; our own row carries the harsher 33% self-handicap.
+export const COMPARISON_ROWS = [
+  {
+    label: "Conto deposito vincolato tipico",
+    gross: "~1–2%",
+    net: "~0,7–1,5%",
+    lockup: "12 mesi",
+  },
+  {
+    label: "Conto corrente",
+    gross: "~0%",
+    net: "~0%",
+    lockup: "Nessuno",
+  },
 ] as const;
 
 // Fallback mainnet yield, shown only while the live Aave APY loads (the real rate

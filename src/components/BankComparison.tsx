@@ -1,6 +1,6 @@
 "use client";
 
-import { BANK_RATES, netYield } from "@/lib/constants";
+import { COMPARISON_ROWS, netYield } from "@/lib/constants";
 import { useAaveApy } from "@/hooks/useAaveApy";
 import PiggyLogo from "@/components/PiggyLogo";
 
@@ -11,14 +11,14 @@ export default function BankComparison() {
   return (
     <div className="w-full">
       <h3 className="font-display text-xl text-warmGray-800 mb-4">
-        Rispetto alla tua banca
+        Come si confronta
       </h3>
 
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-warmGray-200">
             <th className="text-left py-3 pr-3 text-warmGray-500 font-medium">
-              Istituto
+              Opzione
             </th>
             <th className="text-right py-3 px-3 text-warmGray-500 font-medium whitespace-nowrap">
               Lordo
@@ -50,33 +50,31 @@ export default function BankComparison() {
             </td>
           </tr>
 
-          {BANK_RATES.map((bank) => {
-            const netRate = bank.grossRate * (1 - bank.taxRate / 100);
-            return (
-              <tr
-                key={bank.name}
-                className="border-b border-warmGray-100 text-warmGray-600"
-              >
-                <td className="py-3 pr-3 whitespace-nowrap">{bank.name}</td>
-                <td className="text-right py-3 px-3 whitespace-nowrap">
-                  {bank.grossRate.toFixed(1)}%
-                </td>
-                <td className="text-right py-3 px-3 whitespace-nowrap">
-                  {netRate.toFixed(1)}%
-                </td>
-                <td className="text-right py-3 pl-3 whitespace-nowrap">
-                  {bank.lockup}
-                </td>
-              </tr>
-            );
-          })}
+          {COMPARISON_ROWS.map((row) => (
+            <tr
+              key={row.label}
+              className="border-b border-warmGray-100 text-warmGray-600"
+            >
+              <td className="py-3 pr-3">{row.label}</td>
+              <td className="text-right py-3 px-3 whitespace-nowrap">
+                {row.gross}
+              </td>
+              <td className="text-right py-3 px-3 whitespace-nowrap">
+                {row.net}
+              </td>
+              <td className="text-right py-3 pl-3 whitespace-nowrap">
+                {row.lockup}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <p className="text-warmGray-400 text-xs mt-3 leading-relaxed">
-        * Tasso Aave live su Base mainnet, variabile. Gli interessi bancari sono
-        tassati al 26%; le plusvalenze crypto al 33% (più ~0,2% annuo di imposta
-        sul valore). Stima, non è consulenza fiscale.
+        * Il nostro tasso è quello Aave live su Base, variabile. Il netto è
+        stimato con la tassazione più severa per le crypto (33% + ~0,2% annuo di
+        imposta sul valore); gli interessi bancari sono tassati al 26%. Le altre
+        voci sono valori indicativi di mercato. Stima, non è consulenza fiscale.
       </p>
     </div>
   );

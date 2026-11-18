@@ -7,6 +7,7 @@ import BankComparison from "./BankComparison";
 import DepositModal from "./DepositModal";
 import WithdrawModal from "./WithdrawModal";
 import TestnetFaucet from "./TestnetFaucet";
+import Disclosures from "./Disclosures";
 import { LockIcon } from "@/components/Icons";
 import { IS_TESTNET, netYield } from "@/lib/constants";
 import { useAaveApy } from "@/hooks/useAaveApy";
@@ -209,6 +210,8 @@ export default function Dashboard() {
           </div>
         </div>
       </details>
+
+      <Disclosures />
 
       <DepositModal
         isOpen={showDeposit}
