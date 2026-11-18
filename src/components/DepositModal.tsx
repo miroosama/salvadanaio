@@ -90,7 +90,7 @@ export default function DepositModal({
         onClick={handleClose}
       />
 
-      <div className="relative bg-card border-[1.5px] border-mint-300 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 shadow-xl">
+      <div className="relative bg-card border-[1.5px] border-mint-300 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 shadow-modal">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl text-warmGray-900">Deposita</h2>
           <button
@@ -122,7 +122,7 @@ export default function DepositModal({
             )}
             <button
               onClick={handleClose}
-              className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold text-lg transition-colors"
+              className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold text-lg transition active:scale-[0.97]"
             >
               Fatto
             </button>
@@ -156,7 +156,7 @@ export default function DepositModal({
                 <button
                   key={pct}
                   onClick={() => setPercentage(pct)}
-                  className="text-xs px-2 py-1 rounded-md bg-mint-50 text-mint-700 border border-mint-300 hover:bg-mint-100 transition-colors"
+                  className="text-xs px-2 py-1 rounded-md bg-mint-50 text-mint-700 border border-mint-300 hover:bg-mint-100 transition active:scale-[0.97]"
                 >
                   {pct === 1 ? "MAX" : `${pct * 100}%`}
                 </button>
@@ -208,7 +208,7 @@ export default function DepositModal({
         <button
           onClick={handleDeposit}
           disabled={isLoading || numAmount <= 0}
-          className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-lg transition-colors"
+          className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-lg transition active:scale-[0.97]"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">

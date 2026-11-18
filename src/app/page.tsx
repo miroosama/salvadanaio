@@ -27,7 +27,7 @@ export default function Home() {
   // logged-out UI before a returning user's session is restored.
   if (isReconnecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-canvas">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-3 border-terracotta-200 border-t-terracotta-500 rounded-full animate-spin" />
       </div>
     );
@@ -35,7 +35,7 @@ export default function Home() {
 
   if (isConnected) {
     return (
-      <div className="min-h-screen bg-canvas flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <Header onLogout={() => disconnect()} />
         <main className="flex-1 w-full max-w-md sm:max-w-lg mx-auto px-4 pt-6">
           <Dashboard />
@@ -49,7 +49,7 @@ export default function Home() {
   const netRate = netYield(apy);
 
   return (
-    <div className="min-h-screen bg-canvas flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 w-full max-w-md sm:max-w-lg mx-auto px-4 py-12 space-y-10">
         <div className="text-center space-y-4">
@@ -90,7 +90,7 @@ export default function Home() {
           ].map((item) => (
             <div
               key={item.title}
-              className="flex items-start gap-4 bg-cream rounded-xl border border-mint-100 p-4"
+              className="flex items-start gap-4 bg-cream rounded-xl border border-mint-100 p-4 shadow-card"
             >
               <span className="text-mint-500 mt-0.5">
                 <item.Icon className="w-6 h-6" />
@@ -103,7 +103,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="bg-cream rounded-2xl border border-mint-100 p-6">
+        <div className="bg-cream rounded-2xl border border-mint-100 p-6 shadow-card">
           <BankComparison />
         </div>
 
@@ -113,7 +113,7 @@ export default function Home() {
               coinbaseConnector && connect({ connector: coinbaseConnector })
             }
             disabled={isPending}
-            className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition-colors shadow-lg shadow-terracotta-500/20"
+            className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition active:scale-[0.97] shadow-lg shadow-terracotta-500/20"
           >
             {isPending ? "Conferma nella finestra Coinbase…" : "Inizia a risparmiare"}
           </button>

@@ -63,6 +63,13 @@ const config: Config = {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["DM Serif Display", "Georgia", "serif"],
       },
+      boxShadow: {
+        // Warm-tinted, layered depth (toasted peach-brown, not neutral gray) —
+        // reads premium on a warm palette. One tight layer + one diffuse.
+        card: "0 1px 2px -1px rgba(123, 88, 66, 0.08), 0 8px 24px -8px rgba(123, 88, 66, 0.10)",
+        modal:
+          "0 2px 10px -3px rgba(123, 88, 66, 0.14), 0 20px 50px -14px rgba(123, 88, 66, 0.24)",
+      },
     },
   },
   plugins: [],

@@ -125,7 +125,7 @@ export default function ScopriOverlay() {
 
       <div
         ref={panelRef}
-        className="relative bg-card border-[1.5px] border-mint-300 w-full max-h-[88vh] rounded-t-2xl sm:max-h-[82vh] sm:max-w-lg sm:rounded-2xl flex flex-col shadow-xl"
+        className="relative bg-card border-[1.5px] border-mint-300 w-full max-h-[88vh] rounded-t-2xl sm:max-h-[82vh] sm:max-w-lg sm:rounded-2xl flex flex-col shadow-modal"
       >
         {/* Drag handle + close */}
         <div

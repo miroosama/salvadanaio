@@ -64,7 +64,7 @@ export default function Dashboard() {
           <button
             onClick={switchToActiveChain}
             disabled={isSwitchingChain}
-            className="shrink-0 text-sm font-semibold px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white transition-colors"
+            className="shrink-0 text-sm font-semibold px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white transition active:scale-[0.97]"
           >
             {isSwitchingChain ? "..." : "Cambia rete"}
           </button>
@@ -73,7 +73,7 @@ export default function Dashboard() {
 
       {IS_TESTNET && <TestnetFaucet onMinted={refetchAll} />}
 
-      <div className="bg-cream rounded-2xl border border-mint-200 p-6">
+      <div className="bg-cream rounded-2xl border border-mint-200 p-6 shadow-card">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-warmGray-500">Tasso attuale</span>
           <div className="flex items-center gap-2">
@@ -107,14 +107,14 @@ export default function Dashboard() {
           <button
             onClick={() => setShowDeposit(true)}
             disabled={(!hasUsdc && !hasDeposit) || !isCorrectChain}
-            className="flex-1 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-base transition-colors shadow-sm"
+            className="flex-1 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-base transition active:scale-[0.97] shadow-sm"
           >
             Deposita
           </button>
           <button
             onClick={() => setShowWithdraw(true)}
             disabled={!hasDeposit || !isCorrectChain}
-            className="flex-1 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 disabled:opacity-40 text-warmGray-700 font-semibold text-base transition-colors"
+            className="flex-1 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 disabled:opacity-40 text-warmGray-700 font-semibold text-base transition active:scale-[0.97]"
           >
             Preleva
           </button>
@@ -133,7 +133,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-cream rounded-xl border border-mint-100 p-4">
+        <div className="bg-cream rounded-xl border border-mint-100 p-4 shadow-card">
           <p className="text-warmGray-600 text-xs font-medium">
             Nel salvadanaio
           </p>
@@ -145,7 +145,7 @@ export default function Dashboard() {
             </p>
           )}
         </div>
-        <div className="bg-cream rounded-xl border border-mint-100 p-4">
+        <div className="bg-cream rounded-xl border border-mint-100 p-4 shadow-card">
           <p className="text-warmGray-600 text-xs font-medium">
             USDC nel wallet
           </p>
@@ -159,11 +159,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="bg-cream rounded-2xl border border-mint-100 p-6">
+      <div className="bg-cream rounded-2xl border border-mint-100 p-6 shadow-card">
         <BankComparison />
       </div>
 
-      <details className="bg-cream rounded-2xl border border-mint-100 p-6">
+      <details className="bg-cream rounded-2xl border border-mint-100 p-6 shadow-card">
         <summary className="font-display text-lg text-warmGray-800 cursor-pointer select-none">
           Come funziona?
         </summary>

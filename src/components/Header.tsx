@@ -78,14 +78,14 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
         <nav className="flex items-center gap-3">
           <button
             onClick={openScopri}
-            className="text-sm font-medium text-warmGray-600 hover:text-ink px-3 py-2 rounded-lg hover:bg-warmGray-100 transition-colors"
+            className="text-sm font-medium text-warmGray-600 hover:text-ink px-3 py-2 rounded-lg hover:bg-warmGray-100 transition active:scale-[0.97]"
           >
             Scopri
           </button>
           {address && (
             <button
               onClick={() => setSheetOpen(true)}
-              className="inline-flex items-center gap-1.5 bg-warmGray-100 hover:bg-warmGray-200 text-warmGray-600 text-sm font-mono font-medium px-3 py-2 rounded-full transition-colors"
+              className="inline-flex items-center gap-1.5 bg-warmGray-100 hover:bg-warmGray-200 text-warmGray-600 text-sm font-mono font-medium px-3 py-2 rounded-full transition active:scale-[0.97]"
             >
               {short}
               {chevron}
@@ -109,14 +109,14 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
         <div className="flex items-center gap-1.5">
           <button
             onClick={openScopri}
-            className="text-sm font-medium text-warmGray-600 bg-warmGray-100 active:bg-warmGray-200 px-3 py-1.5 rounded-full transition-colors"
+            className="text-sm font-medium text-warmGray-600 bg-warmGray-100 active:bg-warmGray-200 px-3 py-1.5 rounded-full transition active:scale-[0.97]"
           >
             Scopri
           </button>
           {address && (
             <button
               onClick={() => setSheetOpen(true)}
-              className="inline-flex items-center gap-1 bg-warmGray-100 active:bg-warmGray-200 text-warmGray-600 text-xs font-mono font-medium px-2.5 py-1.5 rounded-full transition-colors"
+              className="inline-flex items-center gap-1 bg-warmGray-100 active:bg-warmGray-200 text-warmGray-600 text-xs font-mono font-medium px-2.5 py-1.5 rounded-full transition active:scale-[0.97]"
             >
               {short}
               {chevron}
@@ -139,14 +139,14 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setSheetOpen(false)}
             />
-            <div className="relative bg-card border-[1.5px] border-mint-300 w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-xl">
+            <div className="relative bg-card border-[1.5px] border-mint-300 w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-modal">
               <div className="mx-auto w-10 h-1.5 rounded-full bg-warmGray-200 sm:hidden mb-5" />
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-display text-lg text-ink">Il tuo account</h2>
                 <button
                   onClick={() => setSheetOpen(false)}
                   aria-label="Chiudi"
-                  className="w-8 h-8 flex items-center justify-center rounded-full text-warmGray-400 hover:text-warmGray-700 hover:bg-warmGray-100 text-2xl leading-none transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-warmGray-400 hover:text-warmGray-700 hover:bg-warmGray-100 text-2xl leading-none transition active:scale-[0.97]"
                 >
                   ×
                 </button>
@@ -155,7 +155,7 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
               <p className="text-warmGray-600 text-xs mb-1">Indirizzo</p>
               <button
                 onClick={copyAddress}
-                className="w-full text-left bg-warmGray-100 hover:bg-warmGray-200 rounded-xl px-4 py-3 transition-colors"
+                className="w-full text-left bg-warmGray-100 hover:bg-warmGray-200 rounded-xl px-4 py-3 transition active:scale-[0.97]"
               >
                 <span className="font-mono text-sm text-warmGray-700 break-all">
                   {address}
@@ -176,7 +176,7 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
                     setSheetOpen(false);
                     onLogout();
                   }}
-                  className="w-full mt-6 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 text-warmGray-700 font-semibold transition-colors"
+                  className="w-full mt-6 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 text-warmGray-700 font-semibold transition active:scale-[0.97]"
                 >
                   Esci
                 </button>

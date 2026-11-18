@@ -5,7 +5,15 @@
 @tailwind utilities;
 
 body {
-  @apply bg-canvas text-warmGray-900 antialiased;
+  @apply text-warmGray-900 antialiased;
+  min-height: 100vh;
+  /* Atmosphere only: a warm-cream glow rising from the bottom, settling into the
+     peach canvas above. Both stops share the peach hue so it reads as texture,
+     not a band. Fixed to the viewport so it stays put — never scrolls. */
+  background-color: #f4dbcb;
+  background-image: linear-gradient(0deg, #fdf3ec 0%, #f4dbcb 30%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Smooth ticker animation for yield counter */
