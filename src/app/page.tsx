@@ -5,7 +5,7 @@ import Dashboard from "@/components/Dashboard";
 import BankComparison from "@/components/BankComparison";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Disclosures from "@/components/Disclosures";
+import ScopriOverlay from "@/components/ScopriOverlay";
 import PiggyLogo from "@/components/PiggyLogo";
 import { TrendIcon, BoltIcon, LockIcon, FlagIcon } from "@/components/Icons";
 import { netYield } from "@/lib/constants";
@@ -41,6 +41,7 @@ export default function Home() {
           <Dashboard />
         </main>
         <Footer />
+        <ScopriOverlay />
       </div>
     );
   }
@@ -129,10 +130,9 @@ export default function Home() {
             </button>
           )}
         </div>
-
-        <Disclosures />
       </main>
       <Footer />
+      <ScopriOverlay />
     </div>
   );
 }
