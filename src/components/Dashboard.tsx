@@ -21,7 +21,7 @@ export default function Dashboard() {
     activeChainLabel,
     usdcBalance,
     vaultBalance,
-    displayValue,
+    activeApy,
     isPositionLoading,
     deposit,
     withdraw,
@@ -91,7 +91,8 @@ export default function Dashboard() {
         </p>
 
         <YieldTicker
-          displayValue={displayValue}
+          balance={parseFloat(vaultBalance)}
+          apy={activeApy}
           hasDeposit={hasDeposit}
           isLoading={isPositionLoading}
         />

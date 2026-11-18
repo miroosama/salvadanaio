@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import {
   useAccount,
   useReadContract,
@@ -89,33 +89,10 @@ export function useVault() {
     (isSharesLoading ||
       (!!vaultShares && vaultShares > 0n && isVaultBalanceLoading));
 
-  // Cosmetic per-second counter so the balance visibly ticks up between reads.
-  // Counter ticks at the ACTIVE chain's live Aave APY so it matches real vault
-  // growth (on testnet that's ~flat — real yield is negligible there).
+  // Live Aave APY on the active chain — the fallback slope for the balance
+  // ticker. The ticker itself animates in YieldTicker via a ref (no per-frame
+  // rerenders) and anchors to the real convertToAssets value on each read.
   const { apy: activeApy } = useAaveApy(ACTIVE_CHAIN.id);
-  const [displayValue, setDisplayValue] = useState(0);
-
-  useEffect(() => {
-    const baseAmount = parseFloat(formattedVaultBalance);
-    if (baseAmount <= 0) {
-      setDisplayValue(0);
-      return;
-    }
-
-    // Paint the real balance now; the interval only animates the ticks after
-    // (otherwise it reads $0.00 for the first second).
-    setDisplayValue(baseAmount);
-
-    const perSecondRate = activeApy / 100 / 365 / 24 / 3600;
-    const startTime = Date.now();
-
-    const interval = setInterval(() => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      setDisplayValue(baseAmount + baseAmount * perSecondRate * elapsed);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [formattedVaultBalance, activeApy]);
 
   const deposit = useCallback(
     async (amount: string, onStep?: (step: DepositStep) => void) => {
@@ -192,7 +169,7 @@ export function useVault() {
     activeChainLabel: CHAIN_LABEL,
     usdcBalance: formattedUsdcBalance,
     vaultBalance: formattedVaultBalance,
-    displayValue,
+    activeApy,
     isPositionLoading,
     deposit,
     withdraw,
