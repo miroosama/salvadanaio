@@ -52,6 +52,7 @@ export function useVault() {
 
   const { data: usdcBalance, refetch: refetchUsdc } = useReadContract({
     address: CONTRACTS.usdc,
+    chainId: ACTIVE_CHAIN.id,
     abi: ERC20_ABI,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
@@ -65,6 +66,7 @@ export function useVault() {
     isError: isSharesError,
   } = useReadContract({
     address: CONTRACTS.vault,
+    chainId: ACTIVE_CHAIN.id,
     abi: VAULT_ABI,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
@@ -79,6 +81,7 @@ export function useVault() {
     isError: isVaultBalanceError,
   } = useReadContract({
     address: CONTRACTS.vault,
+    chainId: ACTIVE_CHAIN.id,
     abi: VAULT_ABI,
     functionName: "convertToAssets",
     args: vaultShares ? [vaultShares] : undefined,
@@ -87,6 +90,7 @@ export function useVault() {
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: CONTRACTS.usdc,
+    chainId: ACTIVE_CHAIN.id,
     abi: ERC20_ABI,
     functionName: "allowance",
     args: address ? [address, CONTRACTS.vault] : undefined,
@@ -98,6 +102,7 @@ export function useVault() {
   // full balance. Lets the withdraw flow show "disponibile ora" + avoid a revert.
   const { data: maxWithdraw, refetch: refetchMaxWithdraw } = useReadContract({
     address: CONTRACTS.vault,
+    chainId: ACTIVE_CHAIN.id,
     abi: VAULT_ABI,
     functionName: "maxWithdraw",
     args: address ? [address] : undefined,
