@@ -50,7 +50,13 @@ export function useVault() {
     [switchChain]
   );
 
-  const { data: usdcBalance, refetch: refetchUsdc } = useReadContract({
+  const {
+    data: usdcBalance,
+    refetch: refetchUsdc,
+    error: usdcError,
+    status: usdcStatus,
+    fetchStatus: usdcFetchStatus,
+  } = useReadContract({
     address: CONTRACTS.usdc,
     chainId: ACTIVE_CHAIN.id,
     abi: ERC20_ABI,
@@ -299,5 +305,17 @@ export function useVault() {
     deposit,
     withdraw,
     refetchAll,
+    // TEMP debug — remove after diagnosing the deployed $0.00 read.
+    __debug: {
+      address: address ?? "undefined",
+      isConnected,
+      connector: connector?.id ?? "none",
+      walletChainId: chainId ?? "undefined",
+      readChainId: ACTIVE_CHAIN.id,
+      usdcStatus,
+      usdcFetchStatus,
+      usdcRaw: usdcBalance !== undefined ? (usdcBalance as bigint).toString() : "undefined",
+      usdcErr: usdcError ? (usdcError.shortMessage ?? usdcError.message ?? "err") : "none",
+    },
   };
 }
