@@ -217,9 +217,9 @@ function Guida() {
         <h2 className="font-display text-xl text-ink">Cosa sono gli USDC</h2>
         <p>
           USDC è una moneta digitale ancorata al dollaro: 1 USDC vale circa 1
-          dollaro, ed è usata da milioni di persone nel mondo. Il tuo saldo è in
-          dollari, non in euro — il controvalore in euro dipende dal cambio €/$
-          e può salire o scendere.
+          dollaro, ed è usata da milioni di persone nel mondo. Nell&apos;app usi
+          sempre USDC sulla rete Base. Il tuo saldo è in dollari, non in euro —
+          il controvalore in euro dipende dal cambio €/$ e può salire o scendere.
         </p>
       </section>
 

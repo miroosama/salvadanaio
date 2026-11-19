@@ -134,7 +134,7 @@ export default function DepositModal({
           <>
         <div className="bg-white border border-mint-200 rounded-xl p-4 mb-4">
           <label className="text-warmGray-500 text-sm block mb-2">
-            Importo (USDC)
+            Importo (USDC su Base)
           </label>
           <div className="flex items-center gap-2">
             <span className="text-terracotta-500 text-xl">$</span>

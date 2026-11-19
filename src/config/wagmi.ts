@@ -1,4 +1,5 @@
 import { createConfig, createStorage, cookieStorage, http } from "wagmi";
+import { fallback } from "viem";
 import { base, baseSepolia } from "wagmi/chains";
 import { coinbaseWallet, injected } from "wagmi/connectors";
 
@@ -22,7 +23,15 @@ export const wagmiConfig = createConfig({
   storage: createStorage({ storage: cookieStorage }),
   ssr: true,
   transports: {
-    [base.id]: http(),
+    // Base's default public RPC (mainnet.base.org) rate-limits and can reject
+    // some origins, so reads intermittently return nothing. Use a dedicated RPC
+    // when NEXT_PUBLIC_RPC_URL is set (prod), else fall back across public nodes.
+    [base.id]: process.env.NEXT_PUBLIC_RPC_URL
+      ? http(process.env.NEXT_PUBLIC_RPC_URL)
+      : fallback([
+          http("https://base-rpc.publicnode.com"),
+          http("https://mainnet.base.org"),
+        ]),
     [baseSepolia.id]: http(),
   },
 });
