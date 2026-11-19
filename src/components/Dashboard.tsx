@@ -55,9 +55,8 @@ export default function Dashboard() {
     return hash;
   };
 
-  // Safety net for the mainnet flip: if ACTIVE_CHAIN is switched before its
-  // vault/USDC addresses are filled in, show a calm "coming soon" state instead
-  // of silently reading/transacting against the zero address.
+  // Safety net: if ACTIVE_CHAIN is flipped before its addresses are set, show a
+  // calm "coming soon" instead of transacting against the zero address.
   if (!isConfigured()) {
     return (
       <div className="w-full max-w-md sm:max-w-lg mx-auto">

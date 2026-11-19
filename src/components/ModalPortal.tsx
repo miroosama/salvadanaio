@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-// Renders a modal overlay into document.body, so its `fixed inset-0` resolves
-// against the viewport (not an ancestor) and paints above the sticky header —
-// otherwise the backdrop only covers the content area and leaves a split at the
-// header. SSR-safe via the mounted guard (document is client-only).
+// Renders a modal into document.body so its `fixed inset-0` resolves against the
+// viewport and paints above the sticky header. SSR-safe via the mounted guard.
 export default function ModalPortal({
   children,
 }: {

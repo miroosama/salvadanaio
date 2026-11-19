@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateJwt } from "@coinbase/cdp-sdk/auth";
 
-// Mints a short-lived Coinbase Onramp session token (server-side, with our CDP
-// secret key) that locks delivery to the user's own address: USDC on Base. The
-// client turns this into a pay.coinbase.com URL. This is Coinbase's OWN hosted
-// onramp (card / Apple Pay / Coinbase account) — NOT the Banxa embed in the
-// smart wallet. The key never touches the client.
+// Mints a short-lived Coinbase Onramp session token (server-side, CDP secret
+// key) that locks delivery to the user's address — USDC on Base. The client
+// turns it into a pay.coinbase.com URL. The key never touches the client.
 
 export const runtime = "nodejs"; // generateJwt needs Node crypto (Ed25519)
 

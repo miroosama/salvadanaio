@@ -7,15 +7,12 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title Salvadanaio
- * @notice A simple savings vault that deposits USDC into Aave V3 on Base.
- *         Users deposit USDC, receive vault shares, and earn yield from Aave.
- *         Designed for Italian savers who want better returns than a conto deposito.
- *
- * @dev Extends ERC4626 for standardized vault interface.
- *      - deposit(): User deposits USDC → vault supplies to Aave
- *      - withdraw(): User burns shares → vault withdraws from Aave → returns USDC + yield
- *      - totalAssets(): Returns total USDC value including Aave yield (via aUSDC balance)
+ * @title Salvadanaio — EXPERIMENTAL, NOT DEPLOYED
+ * @notice Early own-vault sketch, kept only for reference. Production uses Aave's
+ *         audited stataUSDC ERC-4626 wrapper directly — no contract of our own,
+ *         and no owner / cap / fee. The Ownable + depositCap bits below are
+ *         exploration leftovers, not the shipped design. See contracts/README.md.
+ * @dev ERC4626 vault that supplies USDC to Aave V3 on Base.
  */
 
 // Minimal Aave V3 Pool interface - only what we need

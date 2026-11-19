@@ -13,12 +13,9 @@ interface FundModalProps {
   onDeposit: () => void;
 }
 
-// Funding via Coinbase's OWN hosted onramp (pay.coinbase.com), not the Banxa
-// embed in the smart wallet. We mint a session token server-side (/api/onramp-
-// session) that locks delivery to the user's connected address — USDC on Base.
-// They pay with Apple Pay / card / their Coinbase account; the coins land here.
-// Works for any connected address (smart wallet or injected). If the session
-// can't be minted, we fall back to showing the address for a manual send.
+// Funding via Coinbase's hosted onramp (pay.coinbase.com): a session token minted
+// server-side locks delivery to the connected address (USDC on Base). Works for
+// any wallet; falls back to showing the address for a manual send if it fails.
 export default function FundModal({
   isOpen,
   onClose,
@@ -40,11 +37,9 @@ export default function FundModal({
     return () => clearInterval(id);
   }, [isOpen, onRefetch]);
 
-  // Snapshot the balance SYNCHRONOUSLY on the open transition (set-state-during-
-  // render, React's supported pattern) — not in an effect, which runs too late
-  // and flashes the success screen on the first "Aggiungi fondi" click. The
-  // "Fondi arrivati" screen then only shows when NEW funds land this session,
-  // so opening to buy MORE on top of a balance still shows the buy flow.
+  // Snapshot the balance on open (synchronously, not in an effect — that runs too
+  // late and flashes the success screen). "Fondi arrivati" then shows only when
+  // NEW funds land this session, so opening to buy more still shows the buy flow.
   if (isOpen && !wasOpen) {
     setWasOpen(true);
     setStartBalance(parseFloat(usdcBalance) || 0);

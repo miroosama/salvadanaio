@@ -23,9 +23,8 @@ import { useAaveApy } from "./useAaveApy";
 
 export type DepositStep = "approving" | "depositing";
 
-// ERC-7677 paymaster capability pointing at OUR server proxy (which forwards to
-// CDP with the secret URL). The wallet calls this to sponsor gas. Same-origin so
-// it resolves in dev and prod alike.
+// ERC-7677 paymaster capability → our server proxy (forwards to CDP, keeps the
+// secret URL off the client). Same-origin so it resolves in dev and prod.
 function paymasterCapabilities() {
   const url =
     typeof window !== "undefined"
@@ -40,9 +39,8 @@ export function useVault() {
   const publicClient = usePublicClient();
   const config = useConfig();
 
-  // The Coinbase Smart Wallet supports sponsored EIP-5792 batched calls (gasless
-  // via our paymaster). An injected EOA (MetaMask) does not, so it falls back to
-  // regular user-paid transactions.
+  // Coinbase Smart Wallet supports sponsored EIP-5792 batched calls; an injected
+  // EOA (MetaMask) does not and falls back to regular user-paid txs.
   const isSmartWallet = connector?.id === "coinbaseWalletSDK";
 
   const { switchChain, isPending: isSwitchingChain } = useSwitchChain();

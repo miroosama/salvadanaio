@@ -19,10 +19,9 @@ const ADDRESSES = {
     faucet: "0xD9145b5F45Ad4519c7ACcD6E0A4A82e83bB8A6Dc",
   },
   [base.id]: {
-    // stataUSDC = StataTokenV2 "waBasUSDC" (Wrapped Aave Base USDC). Verified
-    // Nov 19 against bgd-labs aave-address-book (ASSETS.USDC.STATA_TOKEN) + an
-    // on-chain read: asset() = Base USDC, ERC-4626, 6 decimals. NOT the legacy
-    // STATIC_A_TOKEN (0x4EA71A20…, "stataBasUSDC", older generation).
+    // stataUSDC = StataTokenV2 "waBasUSDC". Verified against bgd-labs aave-
+    // address-book (ASSETS.USDC.STATA_TOKEN) + on-chain (asset()=USDC, ERC-4626).
+    // NOT the legacy STATIC_A_TOKEN 0x4EA71A20… ("stataBasUSDC", older gen).
     vault: "0xC768c589647798a6EE01A91FdE98EF2ed046DBD6",
     usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     faucet: ZERO_ADDRESS,
