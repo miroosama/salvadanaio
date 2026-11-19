@@ -316,6 +316,10 @@ export function useVault() {
       usdcFetchStatus,
       usdcRaw: usdcBalance !== undefined ? (usdcBalance as bigint).toString() : "undefined",
       usdcErr: usdcError ? (usdcError.shortMessage ?? usdcError.message ?? "err") : "none",
+      usdcAddr: CONTRACTS.usdc,
+      vaultAddr: CONTRACTS.vault,
+      envUsdc: process.env.NEXT_PUBLIC_USDC_ADDRESS ?? "unset",
+      envVault: process.env.NEXT_PUBLIC_VAULT_ADDRESS ?? "unset",
     },
   };
 }
