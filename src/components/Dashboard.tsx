@@ -29,7 +29,6 @@ export default function Dashboard() {
     deposit,
     withdraw,
     refetchAll,
-    __debug,
   } = useVault();
 
   const [showDeposit, setShowDeposit] = useState(false);
@@ -74,10 +73,6 @@ export default function Dashboard() {
 
   return (
     <div className="w-full max-w-md sm:max-w-lg mx-auto space-y-6">
-      {/* TEMP debug overlay — remove after diagnosing deployed $0.00 read. */}
-      <pre className="fixed bottom-0 inset-x-0 z-[100] bg-black/90 text-green-400 text-[10px] leading-tight p-2 overflow-x-auto font-mono whitespace-pre-wrap">
-        {JSON.stringify(__debug, null, 1)}
-      </pre>
       {isConnected && !isCorrectChain && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-3">
           <p className="text-amber-800 text-sm">
