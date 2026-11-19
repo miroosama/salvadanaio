@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import { CheckIcon } from "@/components/Icons";
+import ModalPortal from "@/components/ModalPortal";
 
 interface FundModalProps {
   isOpen: boolean;
@@ -13,12 +13,12 @@ interface FundModalProps {
   onDeposit: () => void;
 }
 
-// Path A funding: send the user to their OWN Coinbase wallet to buy USDC. Same
-// passkey -> same smart wallet -> USDC bought on Base lands at useAccount().address,
-// the very address this app watches. No paste, no dev KYB, no minted session.
-// (Path B — a card/Apple-Pay checkout via a licensed provider — is deferred.)
-const COINBASE_WALLET_URL = "https://wallet.coinbase.com";
-
+// Funding via Coinbase's OWN hosted onramp (pay.coinbase.com), not the Banxa
+// embed in the smart wallet. We mint a session token server-side (/api/onramp-
+// session) that locks delivery to the user's connected address — USDC on Base.
+// They pay with Apple Pay / card / their Coinbase account; the coins land here.
+// Works for any connected address (smart wallet or injected). If the session
+// can't be minted, we fall back to showing the address for a manual send.
 export default function FundModal({
   isOpen,
   onClose,
@@ -27,21 +27,32 @@ export default function FundModal({
   onRefetch,
   onDeposit,
 }: FundModalProps) {
-  const { connector } = useAccount();
-  // Path A (wallet.coinbase.com) only works for the Coinbase Smart Wallet — it
-  // delivers to THAT wallet's address. An injected user (MetaMask etc.) must buy
-  // through their OWN wallet's Buy feature, or funds land at the wrong address.
-  const isCoinbase = connector?.id === "coinbaseWalletSDK";
   const [copied, setCopied] = useState(false);
-  const hasFunds = parseFloat(usdcBalance) > 0;
+  const [loading, setLoading] = useState(false);
+  const [sessionError, setSessionError] = useState(false);
+  const [wasOpen, setWasOpen] = useState(false);
+  const [startBalance, setStartBalance] = useState(0);
 
-  // Poll while the user is off buying so the arrival is caught without a manual
-  // refresh. Only while open; cleared on close.
+  // Poll while the user is off buying so arrival is caught without a refresh.
   useEffect(() => {
     if (!isOpen) return;
     const id = setInterval(onRefetch, 8000);
     return () => clearInterval(id);
   }, [isOpen, onRefetch]);
+
+  // Snapshot the balance SYNCHRONOUSLY on the open transition (set-state-during-
+  // render, React's supported pattern) — not in an effect, which runs too late
+  // and flashes the success screen on the first "Aggiungi fondi" click. The
+  // "Fondi arrivati" screen then only shows when NEW funds land this session,
+  // so opening to buy MORE on top of a balance still shows the buy flow.
+  if (isOpen && !wasOpen) {
+    setWasOpen(true);
+    setStartBalance(parseFloat(usdcBalance) || 0);
+  } else if (!isOpen && wasOpen) {
+    setWasOpen(false);
+  }
+  const arrived =
+    wasOpen && (parseFloat(usdcBalance) || 0) > startBalance + 1e-6;
 
   if (!isOpen) return null;
 
@@ -56,10 +67,40 @@ export default function FundModal({
     }
   };
 
+  const openOnramp = async () => {
+    if (!address) return;
+    // Reserve the popup inside the user gesture so it isn't blocked after the
+    // await; we set its location once the session token is ready.
+    const win = window.open("", "_blank");
+    setLoading(true);
+    setSessionError(false);
+    try {
+      const res = await fetch("/api/onramp-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.token) throw new Error(data?.error || "no token");
+      const url =
+        `https://pay.coinbase.com/buy/select-asset?sessionToken=${encodeURIComponent(
+          data.token
+        )}&defaultAsset=USDC&defaultNetwork=base&fiatCurrency=EUR`;
+      if (win) win.location.href = url;
+      else window.location.href = url;
+    } catch {
+      if (win) win.close();
+      setSessionError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
+    <ModalPortal>
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
 
@@ -77,7 +118,7 @@ export default function FundModal({
           </button>
         </div>
 
-        {hasFunds ? (
+        {arrived ? (
           <div className="text-center space-y-4 py-4">
             <CheckIcon className="w-16 h-16 mx-auto text-mint-500" />
             <p className="font-display text-xl text-ink">Fondi arrivati</p>
@@ -94,73 +135,31 @@ export default function FundModal({
         ) : (
           <>
             <p className="text-warmGray-600 text-sm leading-relaxed mb-5">
-              {isCoinbase
-                ? "Compra USDC dal tuo wallet Coinbase. Arrivano qui in automatico, di solito in pochi minuti — non devi copiare né incollare niente."
-                : "Compra USDC direttamente dal tuo wallet. Usa la sua funzione Compra / Aggiungi fondi: gli USDC arrivano qui in automatico, non devi incollare niente."}
+              Compra USDC con Apple Pay, carta o il tuo account Coinbase. Arrivano
+              qui sulla rete Base in automatico — non devi copiare né incollare
+              niente.
             </p>
 
-            <ol className="space-y-3 text-sm text-warmGray-600 mb-5">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
-                  1
-                </span>
-                <span>
-                  {isCoinbase ? (
-                    <>
-                      Apri il tuo wallet Coinbase e accedi con la stessa passkey
-                      (Face ID o impronta).
-                    </>
-                  ) : (
-                    <>
-                      Apri il tuo wallet e tocca <strong>Compra</strong> (o{" "}
-                      <strong>Aggiungi fondi</strong>).
-                    </>
-                  )}
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
-                <span>
-                  {isCoinbase ? (
-                    <>
-                      Tocca <strong>Compra</strong> e scegli{" "}
-                      <strong>USDC</strong>.
-                    </>
-                  ) : (
-                    <>
-                      Scegli <strong>USDC</strong> come token da comprare.
-                    </>
-                  )}
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-mint-50 text-mint-700 text-xs font-bold flex items-center justify-center">
-                  3
-                </span>
-                <span>
-                  Assicurati che la rete sia <strong>Base</strong>, poi conferma
-                  l&apos;acquisto.
-                </span>
-              </li>
-            </ol>
+            <button
+              onClick={openOnramp}
+              disabled={loading || !address}
+              className="block w-full text-center py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-lg transition active:scale-[0.97] shadow-lg shadow-terracotta-500/20"
+            >
+              {loading ? "Apertura…" : "Compra USDC ↗"}
+            </button>
 
-            {isCoinbase && (
-              <a
-                href={COINBASE_WALLET_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold text-lg transition active:scale-[0.97] shadow-lg shadow-terracotta-500/20"
-              >
-                Apri Coinbase ↗
-              </a>
+            {sessionError && (
+              <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 leading-relaxed">
+                Non siamo riusciti ad aprire il checkout. Puoi comunque inviare
+                USDC sulla <strong>rete Base</strong> all&apos;indirizzo qui
+                sotto.
+              </div>
             )}
 
             {address && (
               <div className="mt-5">
                 <p className="text-warmGray-600 text-xs mb-1">
-                  Riceverai gli USDC a questo indirizzo
+                  Riceverai gli USDC a questo indirizzo (rete Base)
                 </p>
                 <button
                   onClick={copyAddress}
@@ -184,5 +183,6 @@ export default function FundModal({
         )}
       </div>
     </div>
+    </ModalPortal>
   );
 }

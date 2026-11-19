@@ -4,6 +4,7 @@ import { useState } from "react";
 import { explorerTxUrl, EXPLORER_NAME } from "@/lib/constants";
 import { parseTxError, type FriendlyError } from "@/lib/errors";
 import { CheckIcon } from "@/components/Icons";
+import ModalPortal from "@/components/ModalPortal";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -45,7 +46,8 @@ export default function WithdrawModal({
   };
 
   const handleClose = () => {
-    if (isLoading) return; // don't close mid-transaction
+    // Always allow closing — a cancelled or hung wallet popup must not trap the
+    // user. Any on-chain tx proceeds regardless; balances refetch on reopen.
     reset();
     onClose();
   };
@@ -82,9 +84,10 @@ export default function WithdrawModal({
   };
 
   return (
+    <ModalPortal>
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={handleClose}
       />
 
@@ -223,5 +226,6 @@ export default function WithdrawModal({
         )}
       </div>
     </div>
+    </ModalPortal>
   );
 }

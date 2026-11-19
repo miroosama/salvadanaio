@@ -62,7 +62,7 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
   );
 
   return (
-    <header className="sticky top-0 z-40 bg-cream/70 backdrop-blur-md border-b border-warmGray-200/50">
+    <header className="sticky top-0 z-40 bg-cream/95 border-b border-warmGray-200/50">
       {/* Desktop */}
       <div className="hidden sm:flex mx-auto max-w-3xl px-8 h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export default function Header({ onLogout }: { onLogout?: () => void }) {
             aria-label="Il tuo account"
           >
             <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/50"
               onClick={() => setSheetOpen(false)}
             />
             <div className="relative bg-card border-[1.5px] border-mint-300 w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-modal">

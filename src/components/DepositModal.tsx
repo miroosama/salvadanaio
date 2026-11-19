@@ -6,6 +6,7 @@ import { useAaveApy } from "@/hooks/useAaveApy";
 import { parseTxError, type FriendlyError } from "@/lib/errors";
 import type { DepositStep } from "@/hooks/useVault";
 import { CheckIcon } from "@/components/Icons";
+import ModalPortal from "@/components/ModalPortal";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -44,7 +45,8 @@ export default function DepositModal({
   };
 
   const handleClose = () => {
-    if (isLoading) return; // don't close mid-transaction
+    // Always allow closing — a cancelled or hung wallet popup must not trap the
+    // user. Any on-chain tx proceeds regardless; balances refetch on reopen.
     reset();
     onClose();
   };
@@ -84,9 +86,10 @@ export default function DepositModal({
     step === "approving" ? "Autorizzazione..." : "Deposito in corso...";
 
   return (
+    <ModalPortal>
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={handleClose}
       />
 
@@ -228,5 +231,6 @@ export default function DepositModal({
         )}
       </div>
     </div>
+    </ModalPortal>
   );
 }

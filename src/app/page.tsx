@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import Dashboard from "@/components/Dashboard";
 import BankComparison from "@/components/BankComparison";
@@ -22,6 +23,12 @@ export default function Home() {
   } = useConnect();
   const { disconnect } = useDisconnect();
   const { apy } = useAaveApy();
+
+  // On login, snap to the top so the user lands on their balance, not wherever
+  // they'd scrolled on the landing page. Smooth so it isn't jarring.
+  useEffect(() => {
+    if (isConnected) window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [isConnected]);
 
   // Two ways in (wallet freedom): the Coinbase Smart Wallet passkey for newcomers,
   // or the user's own injected wallet (MetaMask etc.) if they already self-custody.

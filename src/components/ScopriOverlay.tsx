@@ -119,7 +119,7 @@ export default function ScopriOverlay() {
       aria-label="Scopri Salvadanaio"
     >
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50"
         onClick={close}
       />
 
