@@ -7,8 +7,10 @@ import {
   useWriteContract,
   usePublicClient,
   useSwitchChain,
+  useConfig,
 } from "wagmi";
-import { parseUnits, formatUnits } from "viem";
+import { sendCalls, waitForCallsStatus } from "@wagmi/core";
+import { parseUnits, formatUnits, encodeFunctionData } from "viem";
 import {
   CONTRACTS,
   VAULT_ABI,
@@ -21,10 +23,27 @@ import { useAaveApy } from "./useAaveApy";
 
 export type DepositStep = "approving" | "depositing";
 
+// ERC-7677 paymaster capability pointing at OUR server proxy (which forwards to
+// CDP with the secret URL). The wallet calls this to sponsor gas. Same-origin so
+// it resolves in dev and prod alike.
+function paymasterCapabilities() {
+  const url =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/api/paymaster`
+      : "/api/paymaster";
+  return { paymasterService: { url } };
+}
+
 export function useVault() {
-  const { address, isConnected, chainId } = useAccount();
+  const { address, isConnected, chainId, connector } = useAccount();
   const { writeContractAsync } = useWriteContract();
   const publicClient = usePublicClient();
+  const config = useConfig();
+
+  // The Coinbase Smart Wallet supports sponsored EIP-5792 batched calls (gasless
+  // via our paymaster). An injected EOA (MetaMask) does not, so it falls back to
+  // regular user-paid transactions.
+  const isSmartWallet = connector?.id === "coinbaseWalletSDK";
 
   const { switchChain, isPending: isSwitchingChain } = useSwitchChain();
   const isCorrectChain = !isConnected || chainId === ACTIVE_CHAIN.id;
@@ -123,8 +142,42 @@ export function useVault() {
       if (!address) throw new Error("Wallet non connesso");
 
       const parsedAmount = parseUnits(amount, USDC_DECIMALS);
-      const currentAllowance = (allowance as bigint) ?? 0n;
 
+      // Gasless path (Coinbase Smart Wallet): approve + deposit batched into ONE
+      // sponsored bundle — a single signature, no ETH, gas paid by the paymaster.
+      if (isSmartWallet) {
+        onStep?.("depositing");
+        const { id } = await sendCalls(config, {
+          account: address,
+          chainId: ACTIVE_CHAIN.id,
+          calls: [
+            {
+              to: CONTRACTS.usdc,
+              data: encodeFunctionData({
+                abi: ERC20_ABI,
+                functionName: "approve",
+                args: [CONTRACTS.vault, parsedAmount],
+              }),
+            },
+            {
+              to: CONTRACTS.vault,
+              data: encodeFunctionData({
+                abi: VAULT_ABI,
+                functionName: "deposit",
+                args: [parsedAmount, address],
+              }),
+            },
+          ],
+          capabilities: paymasterCapabilities(),
+        });
+        const { receipts } = await waitForCallsStatus(config, { id });
+        await refetchAllowance();
+        return receipts?.[0]?.transactionHash;
+      }
+
+      // Fallback (injected EOA, e.g. MetaMask): approve-if-needed, then deposit.
+      // User pays gas. Two separate signatures.
+      const currentAllowance = (allowance as bigint) ?? 0n;
       if (currentAllowance < parsedAmount) {
         onStep?.("approving");
         const approveTxHash = await writeContractAsync({
@@ -148,7 +201,15 @@ export function useVault() {
       await publicClient?.waitForTransactionReceipt({ hash: depositTxHash });
       return depositTxHash;
     },
-    [address, allowance, writeContractAsync, refetchAllowance, publicClient]
+    [
+      address,
+      isSmartWallet,
+      config,
+      allowance,
+      writeContractAsync,
+      refetchAllowance,
+      publicClient,
+    ]
   );
 
   const withdraw = useCallback(
@@ -157,24 +218,52 @@ export function useVault() {
 
       // ERC-4626 rounds share->asset down, so a full-balance withdraw() can
       // exceed maxWithdraw by a wei and revert; redeem the shares instead.
-      const txHash = isMax
-        ? await writeContractAsync({
-            address: CONTRACTS.vault,
+      const callData = isMax
+        ? encodeFunctionData({
             abi: VAULT_ABI,
             functionName: "redeem",
             args: [(vaultShares as bigint) ?? 0n, address, address],
           })
-        : await writeContractAsync({
-            address: CONTRACTS.vault,
+        : encodeFunctionData({
             abi: VAULT_ABI,
             functionName: "withdraw",
             args: [parseUnits(amount, USDC_DECIMALS), address, address],
           });
 
+      // Gasless path (Coinbase Smart Wallet): sponsored single call, no ETH.
+      if (isSmartWallet) {
+        const { id } = await sendCalls(config, {
+          account: address,
+          chainId: ACTIVE_CHAIN.id,
+          calls: [{ to: CONTRACTS.vault, data: callData }],
+          capabilities: paymasterCapabilities(),
+        });
+        const { receipts } = await waitForCallsStatus(config, { id });
+        return receipts?.[0]?.transactionHash;
+      }
+
+      // Fallback (injected EOA): user pays gas.
+      const txHash = await writeContractAsync({
+        address: CONTRACTS.vault,
+        abi: VAULT_ABI,
+        ...(isMax
+          ? {
+              functionName: "redeem" as const,
+              args: [(vaultShares as bigint) ?? 0n, address, address] as const,
+            }
+          : {
+              functionName: "withdraw" as const,
+              args: [
+                parseUnits(amount, USDC_DECIMALS),
+                address,
+                address,
+              ] as const,
+            }),
+      });
       await publicClient?.waitForTransactionReceipt({ hash: txHash });
       return txHash;
     },
-    [address, writeContractAsync, vaultShares, publicClient]
+    [address, isSmartWallet, config, writeContractAsync, vaultShares, publicClient]
   );
 
   const refetchAll = useCallback(() => {

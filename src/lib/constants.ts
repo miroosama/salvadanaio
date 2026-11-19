@@ -1,7 +1,7 @@
 import { base, baseSepolia } from "viem/chains";
 
-// Toggle this when going to mainnet
-export const ACTIVE_CHAIN = baseSepolia;
+// Toggle this when going to mainnet. [Nov 19] FLIPPED TO BASE MAINNET.
+export const ACTIVE_CHAIN = base;
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 
@@ -19,9 +19,11 @@ const ADDRESSES = {
     faucet: "0xD9145b5F45Ad4519c7ACcD6E0A4A82e83bB8A6Dc",
   },
   [base.id]: {
-    // Mainnet stataUSDC: VERIFY the exact address from the Aave address book at
-    // Phase 3 (two wrapper generations exist). Zero until then = "not configured".
-    vault: ZERO_ADDRESS,
+    // stataUSDC = StataTokenV2 "waBasUSDC" (Wrapped Aave Base USDC). Verified
+    // Nov 19 against bgd-labs aave-address-book (ASSETS.USDC.STATA_TOKEN) + an
+    // on-chain read: asset() = Base USDC, ERC-4626, 6 decimals. NOT the legacy
+    // STATIC_A_TOKEN (0x4EA71A20…, "stataBasUSDC", older generation).
+    vault: "0xC768c589647798a6EE01A91FdE98EF2ed046DBD6",
     usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     faucet: ZERO_ADDRESS,
   },
@@ -46,7 +48,10 @@ export const CONTRACTS = {
 
 export const USDC_DECIMALS = 6;
 
-export const IS_TESTNET = ACTIVE_CHAIN.id === baseSepolia.id;
+// Cast to number: ACTIVE_CHAIN is a pinned literal, so TS would otherwise flag
+// this comparison as statically decidable. It's intentionally a runtime check
+// that follows whatever ACTIVE_CHAIN is set to.
+export const IS_TESTNET = (ACTIVE_CHAIN.id as number) === baseSepolia.id;
 export const CHAIN_LABEL = ACTIVE_CHAIN.name;
 
 // Explorer derived from the active chain, so links follow it to mainnet.

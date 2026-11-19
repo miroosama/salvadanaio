@@ -13,7 +13,13 @@ import { useAaveApy } from "@/hooks/useAaveApy";
 
 export default function Home() {
   const { isConnected, isReconnecting } = useAccount();
-  const { connect, connectors, isPending, error: connectError } = useConnect();
+  const {
+    connect,
+    connectors,
+    isPending,
+    error: connectError,
+    variables,
+  } = useConnect();
   const { disconnect } = useDisconnect();
   const { apy } = useAaveApy();
 
@@ -22,6 +28,17 @@ export default function Home() {
   const coinbaseConnector =
     connectors.find((c) => c.id === "coinbaseWalletSDK") ?? connectors[0];
   const injectedConnector = connectors.find((c) => c.id !== "coinbaseWalletSDK");
+
+  // isPending is shared across both connect calls, so track WHICH one is
+  // connecting — otherwise a MetaMask click shows the Coinbase label.
+  const pendingConnector = variables?.connector;
+  const pendingId =
+    isPending && pendingConnector && "id" in pendingConnector
+      ? pendingConnector.id
+      : undefined;
+  const coinbasePending = pendingId === coinbaseConnector?.id;
+  const injectedPending =
+    !!injectedConnector && pendingId === injectedConnector.id;
 
   // wagmi has no `ready`; gate on auto-reconnect so we don't flash the
   // logged-out UI before a returning user's session is restored.
@@ -115,7 +132,9 @@ export default function Home() {
             disabled={isPending}
             className="w-full py-4 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-terracotta-300 text-white font-semibold text-lg transition active:scale-[0.97] shadow-lg shadow-terracotta-500/20"
           >
-            {isPending ? "Conferma nella finestra Coinbase…" : "Inizia a risparmiare"}
+            {coinbasePending
+              ? "Conferma nella finestra Coinbase…"
+              : "Inizia a risparmiare"}
           </button>
           <p className="text-center text-warmGray-600 text-xs leading-relaxed">
             Crei il tuo account in pochi secondi con Face ID o impronta. È un
@@ -132,7 +151,7 @@ export default function Home() {
               disabled={isPending}
               className="w-full text-center text-sm font-medium text-terracotta-600 hover:text-terracotta-700 underline underline-offset-4 decoration-terracotta-300 transition-colors pt-1"
             >
-              Hai già un wallet? Connettilo
+              {injectedPending ? "Connessione…" : "Hai già un wallet? Connettilo"}
             </button>
           )}
         </div>

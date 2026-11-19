@@ -6,14 +6,16 @@ import YieldTicker from "./YieldTicker";
 import BankComparison from "./BankComparison";
 import DepositModal from "./DepositModal";
 import WithdrawModal from "./WithdrawModal";
+import FundModal from "./FundModal";
 import TestnetFaucet from "./TestnetFaucet";
 import { LockIcon } from "@/components/Icons";
-import { IS_TESTNET, netYield } from "@/lib/constants";
+import { IS_TESTNET, isConfigured, netYield } from "@/lib/constants";
 import { useAaveApy } from "@/hooks/useAaveApy";
 
 export default function Dashboard() {
   const {
     isConnected,
+    address,
     isCorrectChain,
     switchToActiveChain,
     isSwitchingChain,
@@ -31,6 +33,7 @@ export default function Dashboard() {
 
   const [showDeposit, setShowDeposit] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [showFund, setShowFund] = useState(false);
 
   const hasDeposit = parseFloat(vaultBalance) > 0;
   const hasUsdc = parseFloat(usdcBalance) > 0;
@@ -51,6 +54,23 @@ export default function Dashboard() {
     refetchAll();
     return hash;
   };
+
+  // Safety net for the mainnet flip: if ACTIVE_CHAIN is switched before its
+  // vault/USDC addresses are filled in, show a calm "coming soon" state instead
+  // of silently reading/transacting against the zero address.
+  if (!isConfigured()) {
+    return (
+      <div className="w-full max-w-md sm:max-w-lg mx-auto">
+        <div className="bg-cream rounded-2xl border border-mint-200 p-6 shadow-card text-center space-y-2">
+          <p className="font-display text-xl text-ink">Presto disponibile</p>
+          <p className="text-warmGray-600 text-sm leading-relaxed">
+            Stiamo completando la configurazione su {activeChainLabel}. Torna tra
+            poco.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md sm:max-w-lg mx-auto space-y-6">
@@ -103,32 +123,56 @@ export default function Dashboard() {
           Questo è in dollari (USDC) · il valore in euro può salire o scendere
         </p>
 
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={() => setShowDeposit(true)}
-            disabled={(!hasUsdc && !hasDeposit) || !isCorrectChain}
-            className="flex-1 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-base transition active:scale-[0.97] shadow-sm"
-          >
-            Deposita
-          </button>
-          <button
-            onClick={() => setShowWithdraw(true)}
-            disabled={!hasDeposit || !isCorrectChain}
-            className="flex-1 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 disabled:opacity-40 text-warmGray-700 font-semibold text-base transition active:scale-[0.97]"
-          >
-            Preleva
-          </button>
-        </div>
+        {!hasUsdc && !hasDeposit && !IS_TESTNET ? (
+          // Empty mainnet wallet: the one thing to do is add funds.
+          <>
+            <button
+              onClick={() => setShowFund(true)}
+              disabled={!isCorrectChain}
+              className="w-full mt-6 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-base transition active:scale-[0.97] shadow-sm"
+            >
+              Compra USDC
+            </button>
+            <p className="text-warmGray-600 text-xs text-center mt-3">
+              Il primo passo: aggiungi USDC. Arrivano qui in automatico, di
+              solito in pochi minuti.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowDeposit(true)}
+                disabled={(!hasUsdc && !hasDeposit) || !isCorrectChain}
+                className="flex-1 py-3.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 disabled:bg-warmGray-200 disabled:text-warmGray-400 text-white font-semibold text-base transition active:scale-[0.97] shadow-sm"
+              >
+                Deposita
+              </button>
+              <button
+                onClick={() => setShowWithdraw(true)}
+                disabled={!hasDeposit || !isCorrectChain}
+                className="flex-1 py-3.5 rounded-xl bg-warmGray-100 hover:bg-warmGray-200 disabled:opacity-40 text-warmGray-700 font-semibold text-base transition active:scale-[0.97]"
+              >
+                Preleva
+              </button>
+            </div>
 
-        {!hasUsdc && !hasDeposit && !IS_TESTNET && (
-          <p className="text-warmGray-600 text-xs text-center mt-3">
-            Per iniziare, acquista USDC con il pulsante sopra
-          </p>
-        )}
-        {!hasUsdc && !hasDeposit && IS_TESTNET && (
-          <p className="text-warmGray-600 text-xs text-center mt-3">
-            Usa il faucet qui sopra per ricevere USDC di test
-          </p>
+            {!hasUsdc && !hasDeposit && IS_TESTNET && (
+              <p className="text-warmGray-600 text-xs text-center mt-3">
+                Usa il faucet qui sopra per ricevere USDC di test
+              </p>
+            )}
+            {/* Buying is never gated: always reachable, even with a balance
+                (top up, or buy more without draining to find the button). */}
+            {!IS_TESTNET && (
+              <button
+                onClick={() => setShowFund(true)}
+                className="w-full text-center text-sm font-medium text-terracotta-600 hover:text-terracotta-700 underline underline-offset-4 decoration-terracotta-300 transition mt-3"
+              >
+                Aggiungi fondi
+              </button>
+            )}
+          </>
         )}
       </div>
 
@@ -223,6 +267,17 @@ export default function Dashboard() {
         vaultBalance={vaultBalance}
         maxWithdraw={maxWithdraw}
         onWithdraw={handleWithdraw}
+      />
+      <FundModal
+        isOpen={showFund}
+        onClose={() => setShowFund(false)}
+        address={address}
+        usdcBalance={usdcBalance}
+        onRefetch={refetchAll}
+        onDeposit={() => {
+          setShowFund(false);
+          setShowDeposit(true);
+        }}
       />
     </div>
   );
