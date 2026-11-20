@@ -5,11 +5,13 @@ import Providers from "@/providers/Providers";
 import { wagmiConfig } from "@/config/wagmi";
 import "./globals.css";
 
-// Absolute base so OG/Twitter image URLs resolve (Vercel URL in prod).
+// Absolute base so OG/Twitter image URLs resolve. Default to the real domain in
+// any deployed build so iMessage/Twitter/LinkedIn link previews point at
+// salvadanaio.app (not the vercel.app alias). NEXT_PUBLIC_SITE_URL still overrides.
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  (process.env.NODE_ENV === "production"
+    ? "https://salvadanaio.app"
     : "http://localhost:3000");
 
 export const metadata: Metadata = {
