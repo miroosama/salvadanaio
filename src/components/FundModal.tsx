@@ -130,9 +130,9 @@ export default function FundModal({
         ) : (
           <>
             <p className="text-warmGray-600 text-sm leading-relaxed mb-5">
-              Compra USDC con Apple Pay, carta o il tuo account Coinbase. Arrivano
-              qui sulla rete Base in automatico — non devi copiare né incollare
-              niente.
+              Compri gli USDC su Coinbase, con Apple Pay o carta: potresti dover
+              accedere al tuo account Coinbase (è separato dal tuo wallet). Poi
+              arrivano in automatico nel tuo account Salvadanaio, sulla rete Base.
             </p>
 
             <button

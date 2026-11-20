@@ -177,9 +177,15 @@ export function useVault() {
           ],
           capabilities: paymasterCapabilities(),
         });
-        const { receipts } = await waitForCallsStatus(config, { id });
+        const { status, receipts } = await waitForCallsStatus(config, { id });
+        const receipt = receipts?.[0];
+        // A sponsored batch can be *included* yet revert on-chain — don't report
+        // success off a failed call. Throw so the modal shows a friendly error.
+        if (status !== "success" || receipt?.status === "reverted") {
+          throw new Error("Transaction reverted on-chain");
+        }
         await refetchAllowance();
-        return receipts?.[0]?.transactionHash;
+        return receipt?.transactionHash;
       }
 
       // Fallback (injected EOA, e.g. MetaMask): approve-if-needed, then deposit.
@@ -205,7 +211,13 @@ export function useVault() {
         functionName: "deposit",
         args: [parsedAmount, address],
       });
-      await publicClient?.waitForTransactionReceipt({ hash: depositTxHash });
+      const depositReceipt = await publicClient?.waitForTransactionReceipt({
+        hash: depositTxHash,
+      });
+      // waitForTransactionReceipt resolves even on revert — guard false success.
+      if (depositReceipt?.status === "reverted") {
+        throw new Error("Transaction reverted on-chain");
+      }
       return depositTxHash;
     },
     [
@@ -245,8 +257,12 @@ export function useVault() {
           calls: [{ to: CONTRACTS.vault, data: callData }],
           capabilities: paymasterCapabilities(),
         });
-        const { receipts } = await waitForCallsStatus(config, { id });
-        return receipts?.[0]?.transactionHash;
+        const { status, receipts } = await waitForCallsStatus(config, { id });
+        const receipt = receipts?.[0];
+        if (status !== "success" || receipt?.status === "reverted") {
+          throw new Error("Transaction reverted on-chain");
+        }
+        return receipt?.transactionHash;
       }
 
       // Fallback (injected EOA): user pays gas.
@@ -267,7 +283,12 @@ export function useVault() {
               ] as const,
             }),
       });
-      await publicClient?.waitForTransactionReceipt({ hash: txHash });
+      const txReceipt = await publicClient?.waitForTransactionReceipt({
+        hash: txHash,
+      });
+      if (txReceipt?.status === "reverted") {
+        throw new Error("Transaction reverted on-chain");
+      }
       return txHash;
     },
     [address, isSmartWallet, config, writeContractAsync, vaultShares, publicClient]

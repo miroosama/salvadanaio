@@ -32,6 +32,14 @@ export function parseTxError(err: unknown): FriendlyError {
   if (lower.includes("exceeds balance") || lower.includes("transfer amount")) {
     return { title: "Saldo insufficiente per questa operazione.", detail: raw };
   }
+  // Gas sponsorship couldn't be applied (paymaster declined / at capacity). No
+  // numbers or caps surfaced — just a calm alpha-framed retry nudge.
+  if (lower.includes("paymaster") || lower.includes("sponsor")) {
+    return {
+      title: "Copertura delle commissioni non riuscita. Siamo in alpha — riprova tra poco.",
+      detail: raw,
+    };
+  }
   if (lower.includes("revert")) {
     return {
       title: "La transazione è stata rifiutata dalla blockchain.",

@@ -257,11 +257,28 @@ function Guida() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="font-display text-xl text-ink">Entrare e uscire</h2>
+        <h2 className="font-display text-xl text-ink">
+          Entrare e uscire, passo per passo
+        </h2>
         <p>
-          Per iniziare, porti dei dollari digitali (USDC) nel tuo account e li
-          depositi con un tocco. Per uscire, prelevi: i tuoi USDC tornano
-          disponibili e puoi riconvertirli quando vuoi.
+          Le commissioni di rete per depositare e prelevare le paghiamo noi.
+        </p>
+        <p>
+          Per comprare USDC con euro ti portiamo all&apos;onramp di Coinbase: è
+          la pagina di acquisto dell&apos;app Coinbase (la parte con custodia,
+          dove si comprano e vendono valute). Non è il tuo wallet: lì potresti
+          dover accedere con un account Coinbase, un login separato. Paghi con
+          Apple Pay o carta, la transazione la prepariamo noi, e gli USDC
+          arrivano in automatico nel tuo account Salvadanaio sulla rete Base.
+        </p>
+        <p>
+          Il tuo account Salvadanaio è un Coinbase Smart Wallet: un wallet in
+          auto-custodia, legato alla tua email e protetto da passkey, che apri in
+          Coinbase Wallet o su wallet.coinbase.com. È lì che il tuo denaro vive,
+          ed è da lì che depositi e prelevi. Quando prelevi, i fondi tornano in
+          questo stesso wallet — e li ritrovi anche aprendo l&apos;app Coinbase
+          Wallet. Per tornare in euro fai l&apos;offramp da lì con la stessa
+          email: è la direzione facile, è il wallet che già usi.
         </p>
       </section>
 
@@ -282,6 +299,19 @@ function Guida() {
         </p>
       </section>
 
+      <section className="space-y-2">
+        <h2 className="font-display text-xl text-ink">Dove stiamo andando</h2>
+        <p>
+          Stiamo lavorando per offrire la migliore esperienza di onramp in ogni
+          fase di Salvadanaio, da ora in alpha fino alla V1. Crescendo
+          aggiungeremo più opzioni e soluzioni più semplici e conformi, compresa
+          la nostra visione di autocustodia e di libertà di movimento tra account
+          e altri prodotti DeFi. La nostra visione finale non prevede commissioni
+          aggiuntive per te: oggi lo dimostriamo già coprendo noi le transazioni
+          di deposito e prelievo.
+        </p>
+      </section>
+
       <section className="space-y-3 border-t border-warmGray-200/70 pt-5">
         <h2 className="font-display text-lg text-warmGray-700">Termini e note</h2>
         <div className="space-y-3 text-sm text-warmGray-500">
@@ -298,8 +328,8 @@ function Guida() {
             dipende dal cambio €/$ e può salire o scendere.
           </p>
           <p>
-            Le stime fiscali non sono consulenza fiscale: verifica la tua
-            situazione con un commercialista.
+            Salvadanaio non fornisce consulenza finanziaria o fiscale: verifica
+            la tua situazione con un commercialista.
           </p>
         </div>
       </section>

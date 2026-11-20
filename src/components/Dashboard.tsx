@@ -173,6 +173,10 @@ export default function Dashboard() {
             )}
           </>
         )}
+
+        <p className="text-center text-warmGray-500 text-xs mt-5 pt-4 border-t border-warmGray-200/60 leading-relaxed">
+          Le commissioni di rete per depositare e prelevare le copriamo noi.
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">

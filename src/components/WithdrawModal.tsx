@@ -109,7 +109,9 @@ export default function WithdrawModal({
               Prelievo completato
             </p>
             <p className="text-warmGray-500 text-sm">
-              I tuoi USDC sono tornati nel tuo wallet.
+              I tuoi USDC sono tornati nel tuo account. È lo stesso wallet che
+              apri nell&apos;app Coinbase Wallet: da lì torni in euro con la
+              stessa email, oppure li invii dove vuoi — sono tuoi.
             </p>
             {explorerTxUrl(txHash) && (
               <a
