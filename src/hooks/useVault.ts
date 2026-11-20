@@ -153,6 +153,10 @@ export function useVault() {
         const { id } = await sendCalls(config, {
           account: address,
           chainId: ACTIVE_CHAIN.id,
+          // Force ONE atomic batch so `approve` lands before `deposit` reads the
+          // allowance — without it the wallet can split them and deposit reverts
+          // with "transfer amount exceeds allowance".
+          forceAtomic: true,
           calls: [
             {
               to: CONTRACTS.usdc,
