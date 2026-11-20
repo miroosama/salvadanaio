@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
+import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/providers/Providers";
 import { wagmiConfig } from "@/config/wagmi";
 import "./globals.css";
@@ -51,6 +52,7 @@ export default function RootLayout({
     <html lang="it">
       <body>
         <Providers initialState={initialState}>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
